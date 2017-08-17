@@ -1,0 +1,615 @@
+ACP: Permissions-> select user or user group -> Edit permissions -> CHANGE Standard Access + Polls to Standard Access
+
+
+change tagcloud.html  -> to remove hyperlink for tags
+viewforum_body.html   -> line 164 -> comment views  	<!--<dd class="views">{L_VIEWS}</dd>-->
+                         line 239                       <!--<dd class="views">{topicrow.VIEWS} <dfn>{L_VIEWS}</dfn></dd>-->
+
+small_tag.html -> line 2, change <div class="rh_tag"><a href="{rh_tags_tmp.LINK}">{rh_tags_tmp.NAME}</a></div>
+                          to <div class="rh_tag">{rh_tags_tmp.NAME}</div>
+
+forumlist_body.html
+<!-- remove, last post title, by author, line 92 - 101-->
+								<!-- IF forumrow.S_DISPLAY_SUBJECT -->
+									<!-- EVENT forumlist_body_last_post_title_prepend -->
+									<a href="{forumrow.U_LAST_POST}" title="{forumrow.LAST_POST_SUBJECT}" class="lastsubject">{forumrow.LAST_POST_SUBJECT_TRUNCATED}</a> <br />
+								<!-- ENDIF -->
+									{L_POST_BY_AUTHOR} {forumrow.LAST_POSTER_FULL}
+								<!-- IF not S_IS_BOT -->
+									<a href="{forumrow.U_LAST_POST}" title="{L_VIEW_LATEST_POST}">
+										<i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{L_VIEW_LATEST_POST}</span>
+									</a>
+								<!-- ENDIF -->
+
+viewtopic_body_postrow_post_content_footer.html
+commented href
+	<div class="rh_tag"><a href="{rh_topic_tags.LINK}">{rh_topic_tags.NAME}</a></div>
+
+simple_tag.html
+commented href
+<div class="rh_tag"><a href="{LINK}">{NAME}</a></div>
+
+
+
+search_results. html
+remove line 30-42
+<div class="pagination">
+			<!-- IF U_MARK_ALL_READ --><a href="{U_MARK_ALL_READ}" class="mark-read" accesskey="m">{L_MARK_ALL_READ}</a> &bull;<!-- ENDIF -->
+			{SEARCH_MATCHES}
+			<!-- IF .pagination -->
+				<!-- INCLUDE pagination.html -->
+			<!-- ELSE -->
+				 &bull; {PAGE_NUMBER}
+			<!-- ENDIF -->
+		</div>
+		
+remove line 200-208
+	<div class="pagination">
+		{SEARCH_MATCHES}
+		<!-- IF .pagination -->
+			<!-- INCLUDE pagination.html -->
+		<!-- ELSE -->
+			 &bull; {PAGE_NUMBER}
+		<!-- ENDIF -->
+	</div>
+</div>
+
+remove line 160-168
+		<dl class="postprofile">
+			<!-- EVENT search_results_postprofile_before -->
+			<dt class="author">{L_POST_BY_AUTHOR} {searchresults.POST_AUTHOR_FULL}</dt>
+			<dd class="search-result-date">{searchresults.POST_DATE}</dd>
+			<dd>{L_FORUM}{L_COLON} <a href="{searchresults.U_VIEW_FORUM}">{searchresults.FORUM_TITLE}</a></dd>
+			<dd>{L_TOPIC}{L_COLON} <a href="{searchresults.U_VIEW_TOPIC}">{searchresults.TOPIC_TITLE}</a></dd>
+			<dd>{L_REPLIES}{L_COLON} <strong>{searchresults.TOPIC_REPLIES}</strong></dd>
+			<dd>{L_VIEWS}{L_COLON} <strong>{searchresults.TOPIC_VIEWS}</strong></dd>
+			<!-- EVENT search_results_postprofile_after -->
+		</dl>
+		
+remove line 27 - 41
+	<!-- IF TOTAL_MATCHES > 0 -->
+		<div class="search-box" role="search">
+			<form method="post" action="{S_SEARCH_ACTION}">
+			<fieldset>
+				<input class="inputbox search tiny" type="search" name="add_keywords" id="add_keywords" value="" placeholder="{L_SEARCH_IN_RESULTS}" />
+				<button class="button button-search" type="submit" title="{L_SEARCH}">
+					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH}</span>
+				</button>
+				<a href="{U_SEARCH}" class="button button-search-end" title="{L_SEARCH_ADV}">
+					<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH_ADV}</span>
+				</a>
+			</fieldset>
+			</form>
+		</div>
+	<!-- ENDIF -->
+remove line 219 -224 
+<div class="action-bar bottom">
+	<!-- IF .searchresults and (S_SELECT_SORT_DAYS or S_SELECT_SORT_KEY) -->
+	<form method="post" action="{S_SEARCH_ACTION}">
+		<!-- INCLUDE display_options.html -->
+	</form>
+		<!-- ENDIF -->
+
+posting_editor.html
+line 42 - 72 --> BBCode and Smiles is are off
+	<div id="smiley-box" class="smiley-box">
+		<!-- EVENT posting_editor_smilies_before -->
+		<!-- IF S_SMILIES_ALLOWED and .smiley -->
+			<strong>{L_SMILIES}</strong><br />
+			<!-- BEGIN smiley -->
+				<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+			<!-- END smiley -->
+		<!-- ENDIF -->
+		<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED -->
+			<br /><a href="{U_MORE_SMILIES}" onclick="popup(this.href, 750, 350, '_phpbbsmilies'); return false;">{L_MORE_SMILIES}</a>
+		<!-- ENDIF -->
+		<!-- EVENT posting_editor_smilies_after -->
+		<!-- IF BBCODE_STATUS -->
+		<div class="bbcode-status">
+			<!-- IF .smiley --><hr /><!-- ENDIF -->
+			{BBCODE_STATUS}<br />
+			<!-- IF S_BBCODE_ALLOWED -->
+				{IMG_STATUS}<br />
+				{FLASH_STATUS}<br />
+				{URL_STATUS}<br />
+			<!-- ENDIF -->
+			{SMILIES_STATUS}
+		</div>
+		<!-- ENDIF -->
+		<!-- EVENT posting_editor_bbcode_status_after -->
+		<!-- IF S_EDIT_DRAFT || S_DISPLAY_REVIEW -->
+			<!-- IF S_DISPLAY_REVIEW --><hr /><!-- ENDIF -->
+			<!-- IF S_EDIT_DRAFT --><strong><a href="{S_UCP_ACTION}">{L_BACK_TO_DRAFTS}</a></strong><!-- ENDIF -->
+			<!-- IF S_DISPLAY_REVIEW --><strong><a href="#review">{L_TOPIC_REVIEW}</a></strong><!-- ENDIF -->
+		<!-- ENDIF -->
+	</div>
+line 97-99 --> preview and save draft button
+<!-- IF S_HAS_DRAFTS --><input type="submit" accesskey="d" tabindex="8" name="load" value="{L_LOAD_DRAFT}" class="button2" onclick="load_draft = true;" />&nbsp; <!-- ENDIF -->
+			<!-- IF S_SAVE_ALLOWED --><input type="submit" accesskey="k" tabindex="7" name="save" value="{L_SAVE_DRAFT}" class="button2" />&nbsp; <!-- ENDIF -->
+			<input type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" class="button1"<!-- IF not S_PRIVMSGS --> onclick="document.getElementById('postform').action += '#preview';"<!-- ENDIF --> />&nbsp;
+
+
+Comment line 120, 123, 126
+<div><label for="disable_magic_url"><input type="checkbox" name="disable_magic_url" id="disable_magic_url"{S_MAGIC_URL_CHECKED} /> {L_DISABLE_MAGIC_URL}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_SIG_ALLOWED -->
+				<div><label for="attach_sig"><input type="checkbox" name="attach_sig" id="attach_sig"{S_SIGNATURE_CHECKED} /> {L_ATTACH_SIG}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_NOTIFY_ALLOWED -->
+				<div><label for="notify"><input type="checkbox" name="notify" id="notify"{S_NOTIFY_CHECKED} /> {L_NOTIFY_REPLY}</label></div>
+			
+line 105- 124 --> REMOVE Options tab
+<!-- IF not S_PRIVMSGS and not S_SHOW_DRAFTS and not $SIG_EDIT eq 1 -->
+		<div id="tabs" class="tabs sub-panels" data-show-panel="<!-- IF SHOW_PANEL -->{SHOW_PANEL}<!-- ELSE -->options-panel<!-- ENDIF -->" role="tablist">
+			<ul>
+				<li id="options-panel-tab" class="tab activetab"><a href="#tabs" data-subpanel="options-panel" role="tab" aria-controls="options-panel"><span>{L_OPTIONS}</span></a></li>
+				<!-- IF S_SHOW_ATTACH_BOX -->
+					<li id="attach-panel-tab" class="tab">
+						<a href="#tabs" data-subpanel="attach-panel" role="tab" aria-controls="attach-panel">
+							{L_ATTACHMENTS} <strong id="file-total-progress" class="file-total-progress"><strong id="file-total-progress-bar" class="file-total-progress-bar"></strong></strong>
+						</a>
+					</li>
+				<!-- ENDIF -->
+				<!-- IF S_SHOW_POLL_BOX || S_POLL_DELETE -->
+					<li id="poll-panel-tab" class="tab">
+						<a href="#tabs" data-subpanel="poll-panel" role="tab" aria-controls="poll-panel">{L_ADD_POLL}</a>
+					</li>
+				<!-- ENDIF -->
+				<!-- EVENT posting_editor_add_panel_tab -->
+			</ul>
+		</div>
+	<!-- ENDIF -->	
+	
+Remove line 123- 132
+			<!-- IF S_SOFTDELETE_ALLOWED or S_DELETE_ALLOWED -->
+				<hr class="dashed" />
+				<dl>
+					<dt><label for="delete">{L_DELETE_POST}{L_COLON}</label></dt>
+					<dd><label for="delete"><input type="checkbox" name="delete" id="delete" {S_SOFTDELETE_CHECKED} /> {L_DELETE_POST_WARN}</label></dd>
+					<!-- IF S_DELETE_ALLOWED and S_SOFTDELETE_ALLOWED -->
+						<dd><label for="delete_permanent"><input type="checkbox" name="delete_permanent" id="delete_permanent" /> {L_DELETE_POST_PERMANENTLY}</label></dd>
+					<!-- ENDIF -->
+				</dl>
+			<!-- ENDIF -->
+
+jumpbox.html
+comment line 23- 27
+<!---->
+search_results.html
+line 17-21 and change it to hardcode link (to return to cat forum page)
+<p class="advanced-search-link">
+		<a class="arrow-{S_CONTENT_FLOW_BEGIN}" href="{U_SEARCH}" title="{L_SEARCH_ADV}">
+			<i class="icon fa-angle-{S_CONTENT_FLOW_BEGIN} fa-fw icon-black" aria-hidden="true"></i><span>{L_GO_TO_SEARCH_ADV}</span>
+		</a>
+	</p>
+	
+	<a href="http://localhost/phpBB3/viewforum.php?f=3">Back to Forum </a> ==> refer to show_tag.html
+Overall_header.html
+line 86-94, changed line 89 from !!!CANCELLED
+    <h1>{SITENAME}</h1> to <h1><a href="{U_VIEW_FORUM}">{SITENAME}</a></h1>
+<div id="site-description">
+				<a id="logo" class="logo" href="<!-- IF U_SITE_HOME -->{U_SITE_HOME}<!-- ELSE -->{U_INDEX}<!-- ENDIF -->" title="<!-- IF U_SITE_HOME -->{L_SITE_HOME}<!-- ELSE -->{L_INDEX}<!-- ENDIF -->"><span class="site_logo"></span></a>
+				<div  class="site-description">
+					<h1>
+					<a href="{U_VIEW_FORUM}">{SITENAME}</a></h1>
+					<p>{SITE_DESCRIPTION}</p>
+					<p class="skiplink"><a href="#start_here">{L_SKIP}</a></p>
+				</div>
+			</div>
+navbar_header.html
+<!--remove marks forum unread, line 37-43-->
+					<!-- IF U_MARK_FORUMS -->
+						<li>
+							<a href="{U_MARK_FORUMS}" role="menuitem" accesskey="m" data-ajax="mark_forums_read">
+								<i class="icon fa-file fa-fw" aria-hidden="true"></i><span>{L_MARK_FORUMS_READ}</span>
+							</a>
+						</li>
+					<!-- ENDIF -->
+<!-- remove notification, line 118 - 123-->
+			<li class="dropdown-container dropdown-{S_CONTENT_FLOW_END} rightside" data-skip-responsive="true">
+				<a href="{U_VIEW_ALL_NOTIFICATIONS}" id="notification_list_button" class="dropdown-trigger">
+					<i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>{L_NOTIFICATIONS} </span><strong class="badge<!-- IF not NOTIFICATIONS_COUNT --> hidden<!-- ENDIF -->">{NOTIFICATIONS_COUNT}</strong>
+				</a>
+				<!-- INCLUDE notification_dropdown.html -->
+			</li>
+<!-- remove profile, line 93-97-->
+		
+						<li>
+							<a href="{U_USER_PROFILE}" title="{L_READ_PROFILE}" role="menuitem">
+								<i class="icon fa-user fa-fw" aria-hidden="true"></i><span>{L_READ_PROFILE}</span>
+							</a>
+						</li>
+<!-- remove line 105-110-->
+						<li>
+							<a href="{U_PROFILE}" title="{L_PROFILE}" role="menuitem">
+								<i class="icon fa-sliders fa-fw" aria-hidden="true"></i><span>{L_PROFILE}</span>
+							</a>
+						</li>
+<!-- line 48-53 remove search-->
+	<li class="separator"></li> 
+							<li>
+								<a href="{U_SEARCH}" role="menuitem">
+									<i class="icon fa-search fa-fw" aria-hidden="true"></i><span>{L_SEARCH}</span>
+								</a>
+							</li>
+<!-- *** remove code from 72-76 -->
+		<li <!-- IF not S_USER_LOGGED_IN -->data-skip-responsive="true"<!-- ELSE -->data-last-responsive="true"<!-- ENDIF -->>
+			<a href="{U_FAQ}" rel="help" title="{L_FAQ_EXPLAIN}" role="menuitem">
+				<i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>{L_FAQ}</span>
+			</a>
+		</li>
+<!-- *** remove code from 65 - 82 -->
+					<!-- IF not S_IS_BOT and (S_DISPLAY_MEMBERLIST or U_TEAM) -->
+						<li class="separator"></li>
+						<!-- IF S_DISPLAY_MEMBERLIST -->
+							<li>
+								<a href="{U_MEMBERLIST}" role="menuitem">
+									<i class="icon fa-group fa-fw" aria-hidden="true"></i><span>{L_MEMBERLIST}</span>
+								</a>
+							</li>
+						<!-- ENDIF -->
+						<!-- IF U_TEAM -->
+							<li>
+								<a href="{U_TEAM}" role="menuitem">
+									<i class="icon fa-shield fa-fw" aria-hidden="true"></i><span>{L_THE_TEAM}</span>
+								</a>
+							</li>
+						<!-- ENDIF -->
+					<!-- ENDIF -->
+					<li class="separator"></li>
+
+viewtopic_topic_tools.html
+line 2 -49 
+<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="{L_TOPIC_TOOLS}" class="button button-secondary dropdown-trigger dropdown-select">
+			<i class="icon fa-wrench fa-fw" aria-hidden="true"></i>
+			<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+		</span>
+		<div class="dropdown">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+				<!-- EVENT viewtopic_topic_tools_before -->
+				<!-- IF U_WATCH_TOPIC -->
+					<li>
+						<a href="{U_WATCH_TOPIC}" class="zwatch-topic-link" title="{S_WATCH_TOPIC_TITLE}" data-ajax="toggle_link" data-toggle-class="icon <!-- IF S_WATCHING_TOPIC -->fa-check-square-o<!-- ELSE -->fa-square-o<!-- ENDIF --> fa-fw" data-toggle-text="{S_WATCH_TOPIC_TOGGLE}" data-toggle-url="{U_WATCH_TOPIC_TOGGLE}" data-update-all=".watch-topic-link">
+							<i class="icon <!-- IF S_WATCHING_FORUM -->fa-square-o<!-- ELSE -->fa-check-square-o<!-- ENDIF --> fa-fw" aria-hidden="true"></i><span>{S_WATCH_TOPIC_TITLE}</span>
+						</a>
+					</li>
+				<!-- ENDIF -->
+				<!-- IF U_BOOKMARK_TOPIC -->
+					<li>
+						<a href="{U_BOOKMARK_TOPIC}" class="bookmark-link" title="{L_BOOKMARK_TOPIC}" data-ajax="alt_text" data-alt-text="{S_BOOKMARK_TOGGLE}" data-update-all=".bookmark-link">
+							<i class="icon fa-bookmark-o fa-fw" aria-hidden="true"></i><span>{S_BOOKMARK_TOPIC}</span>
+						</a>
+					</li>
+				<!-- ENDIF -->
+				<!-- IF U_BUMP_TOPIC -->
+				<li>
+					<a href="{U_BUMP_TOPIC}" title="{L_BUMP_TOPIC}" data-ajax="true">
+						<i class="icon fa-level-up fa-fw" aria-hidden="true"></i><span>{L_BUMP_TOPIC}</span>
+					</a>
+				</li>
+				<!-- ENDIF -->
+				<!-- IF U_EMAIL_TOPIC -->
+				<li>
+					<a href="{U_EMAIL_TOPIC}" title="{L_EMAIL_TOPIC}">
+						<i class="icon fa-envelope-o fa-fw" aria-hidden="true"></i><span>{L_EMAIL_TOPIC}</span>
+					</a>
+				</li>
+				<!-- ENDIF -->
+				<!-- IF U_PRINT_TOPIC -->
+				<li>
+					<a href="{U_PRINT_TOPIC}" title="{L_PRINT_TOPIC}" accesskey="p">
+						<i class="icon fa-print fa-fw" aria-hidden="true"></i><span>{L_PRINT_TOPIC}</span>
+					</a>
+				</li>
+				<!-- ENDIF -->
+				<!-- EVENT viewtopic_topic_tools_after -->
+			</ul>
+		</div>
+	</div>
+
+
+viewforum_body. html
+line 230-234, Go to last post, delete 
+	<!-- IF not S_IS_BOT -->
+							<a href="{topicrow.U_LAST_POST}" title="{L_GOTO_LAST_POST}">
+								<i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{VIEW_LATEST_POST}</span>
+							</a>
+						<!-- ENDIF -->
+
+line 51 - 55, sorting function
+				<!-- IF S_SELECT_SORT_DAYS and not S_IS_BOT -->
+			<form method="post" action="{S_FORUM_ACTION}">
+			<!-- INCLUDE display_options.html -->
+			</form>
+		<!-- ENDIF -->
+line 83-91, Mark questions read • 15 questions • Page 1 of 1
+	<div class="pagination">
+		<!-- IF not S_IS_BOT and U_MARK_TOPICS and .topicrow --><a href="{U_MARK_TOPICS}" class="mark" accesskey="m" data-ajax="mark_topics_read">{L_MARK_TOPICS_READ}</a> &bull; <!-- ENDIF -->
+		{TOTAL_TOPICS}
+		<!-- IF .pagination -->
+			<!-- INCLUDE pagination.html -->
+		<!-- ELSE -->
+			&bull; {PAGE_NUMBER}
+		<!-- ENDIF -->
+	</div>
+line 255-285
+<div class="action-bar bar-bottom">
+		<!-- IF not S_IS_BOT and S_DISPLAY_POST_INFO -->
+			<!-- EVENT viewforum_buttons_bottom_before -->
+
+			<a href="{U_POST_NEW_TOPIC}" class="button" title="<!-- IF S_IS_LOCKED -->{L_FORUM_LOCKED}<!-- ELSE -->{L_POST_TOPIC}<!-- ENDIF -->">
+			<!-- IF S_IS_LOCKED -->
+				<span>{L_BUTTON_FORUM_LOCKED}</span> <i class="icon fa-lock fa-fw" aria-hidden="true"></i> 
+			<!-- ELSE -->
+				<span>{L_BUTTON_NEW_TOPIC}</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i>
+			<!-- ENDIF -->
+			</a>
+
+			<!-- EVENT viewforum_buttons_bottom_after -->
+		<!-- ENDIF -->
+
+		<!-- IF S_SELECT_SORT_DAYS and not S_IS_BOT -->
+			<form method="post" action="{S_FORUM_ACTION}">
+			<!-- INCLUDE display_options.html -->
+			</form>
+		<!-- ENDIF -->
+
+		<div class="pagination">
+			<!-- IF not S_IS_BOT and U_MARK_TOPICS and .topicrow --><a href="{U_MARK_TOPICS}" data-ajax="mark_topics_read">{L_MARK_TOPICS_READ}</a> &bull; <!-- ENDIF -->
+			{TOTAL_TOPICS}
+			<!-- IF .pagination -->
+				<!-- INCLUDE pagination.html -->
+			<!-- ELSE -->
+				 &bull; {PAGE_NUMBER}
+			<!-- ENDIF -->
+		</div>
+	</div> 
+
+line 54- 67
+<div class="search-box" role="search">
+			<form method="get" id="forum-search" action="{S_SEARCHBOX_ACTION}">
+			<fieldset>
+				<input class="inputbox search tiny" type="search" name="keywords" id="search_keywords" size="20" placeholder="{L_SEARCH_FORUM}" />
+				<button class="button button-search" type="submit" title="{L_SEARCH}">
+					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH}</span>
+				</button>
+				// below is gear button !!!!
+				<a href="{U_SEARCH}" class="button button-search-end" title="{L_SEARCH_ADV}">
+					<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH_ADV}</span>
+				</a>
+				{S_SEARCH_LOCAL_HIDDEN_FIELDS}
+			</fieldset>
+			</form>
+		</div>
+		
+
+navbar_footer.html
+line 5-24
+		<li class="breadcrumbs">
+			<!-- IF U_SITE_HOME -->
+				{% spaceless %}
+				<span class="crumb">
+					<a href="{U_SITE_HOME}" data-navbar-reference="home">
+						<i class="icon fa-home fa-fw" aria-hidden="true"></i><span>{L_SITE_HOME}</span>
+					</a>
+				</span>
+				{% endspaceless %}
+			<!-- ENDIF -->
+			<!-- EVENT overall_footer_breadcrumb_prepend -->
+			{% spaceless %}
+			<span class="crumb">
+				<a href="{U_INDEX}" data-navbar-reference="index">
+					<!-- IF not U_SITE_HOME --><i class="icon fa-home fa-fw" aria-hidden="true"></i><!-- ENDIF --><span>{L_INDEX}</span>
+				</a>
+			</span>
+			{% endspaceless %}
+			<!-- EVENT overall_footer_breadcrumb_append -->
+		</li>
+line 37
+<!-- **** delete all board cookies--> 
+
+navbar_header.html 
+line 188-236
+<!-- *** remove line 188 - 236 -->
+<div class="navbar" role="navigation">
+	<div class="inner">
+	<ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
+		<!-- DEFINE $MICRODATA = ' itemtype="http://data-vocabulary.org/Breadcrumb" itemscope=""' -->
+		<!-- EVENT overall_header_breadcrumbs_before -->
+		<li class="breadcrumbs">
+			<!-- IF U_SITE_HOME -->
+				<span class="crumb" {$MICRODATA}><a href="{U_SITE_HOME}" itemprop="url" data-navbar-reference="home"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span itemprop="title">{L_SITE_HOME}</span></a></span>
+			<!-- ENDIF -->
+			<!-- EVENT overall_header_breadcrumb_prepend -->
+				<span class="crumb" {$MICRODATA}><a href="{U_INDEX}" itemprop="url" accesskey="h" data-navbar-reference="index"><!-- IF not U_SITE_HOME --><i class="icon fa-home fa-fw"></i><!-- ENDIF --><span itemprop="title">{L_INDEX}</span></a></span>
+
+			<!-- BEGIN navlinks -->
+				<!-- EVENT overall_header_navlink_prepend -->
+				<span class="crumb" {$MICRODATA}<!-- IF navlinks.MICRODATA --> {navlinks.MICRODATA}<!-- ENDIF -->><a href="{navlinks.U_VIEW_FORUM}" itemprop="url"><span itemprop="title">{navlinks.FORUM_NAME}</span></a></span>
+				<!-- EVENT overall_header_navlink_append -->
+			<!-- END navlinks -->
+			<!-- EVENT overall_header_breadcrumb_append -->
+		</li>
+		<!-- EVENT overall_header_breadcrumbs_after -->
+
+		<!-- EVENT overall_header_searchbox_before -->
+		<!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
+			<li id="search-box" class="rightside search-box responsive-hide" role="search">
+				<form action="{U_SEARCH}" method="get" id="search">
+				<fieldset>
+					<input name="keywords" id="keywords" type="search" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search tiny" size="20" value="{SEARCH_WORDS}" placeholder="{L_SEARCH_MINI}" />
+					<button class="button button-search" type="submit" title="{L_SEARCH}">
+						<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH}</span>
+					</button>
+					<a href="{U_SEARCH}" class="button button-search-end" title="{L_SEARCH_ADV}">
+						<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH_ADV}</span>
+					</a>
+					{S_SEARCH_HIDDEN_FIELDS}
+				</fieldset>
+				</form>
+			</li>
+
+			<li class="rightside responsive-search">
+				<a href="{U_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}" role="menuitem">
+					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH}</span>
+				</a>
+			</li>
+		<!-- ENDIF -->
+		<!-- EVENT overall_header_searchbox_after -->
+	</ul>
+
+	</div>
+</div>
+quickreply_editor.html
+line 21, Full editor&preview, commented
+
+viewtopic_body.html
+line 121-187, deleted
+		<dl class="postprofile" id="profile{postrow.POST_ID}"<!-- IF postrow.S_POST_HIDDEN --> style="display: none;"<!-- ENDIF -->>
+			<dt class="<!-- IF postrow.RANK_TITLE or postrow.RANK_IMG -->has-profile-rank<!-- ELSE -->no-profile-rank<!-- ENDIF --> <!-- IF postrow.POSTER_AVATAR -->has-avatar<!-- ELSE -->no-avatar<!-- ENDIF -->">
+				<div class="avatar-container">
+					<!-- EVENT viewtopic_body_avatar_before -->
+					<!-- IF postrow.POSTER_AVATAR -->
+						<!-- IF postrow.U_POST_AUTHOR --><a href="{postrow.U_POST_AUTHOR}" class="avatar">{postrow.POSTER_AVATAR}</a><!-- ELSE --><span class="avatar">{postrow.POSTER_AVATAR}</span><!-- ENDIF -->
+					<!-- ENDIF -->
+					<!-- EVENT viewtopic_body_avatar_after -->
+				</div>
+				<!-- EVENT viewtopic_body_post_author_before -->
+				<!-- IF not postrow.U_POST_AUTHOR --><strong>{postrow.POST_AUTHOR_FULL}</strong><!-- ELSE -->{postrow.POST_AUTHOR_FULL}<!-- ENDIF -->
+				<!-- EVENT viewtopic_body_post_author_after -->
+			</dt>
+
+			<!-- EVENT viewtopic_body_postrow_rank_before -->
+			<!-- IF postrow.RANK_TITLE or postrow.RANK_IMG --><dd class="profile-rank">{postrow.RANK_TITLE}<!-- IF postrow.RANK_TITLE and postrow.RANK_IMG --><br /><!-- ENDIF -->{postrow.RANK_IMG}</dd><!-- ENDIF -->
+			<!-- EVENT viewtopic_body_postrow_rank_after -->
+
+		<!-- IF postrow.POSTER_POSTS != '' --><dd class="profile-posts"><strong>{L_POSTS}{L_COLON}</strong> <!-- IF postrow.U_SEARCH !== '' --><a href="{postrow.U_SEARCH}"><!-- ENDIF -->{postrow.POSTER_POSTS}<!-- IF postrow.U_SEARCH !== '' --></a><!-- ENDIF --></dd><!-- ENDIF -->
+		<!-- IF postrow.POSTER_JOINED --><dd class="profile-joined"><strong>{L_JOINED}{L_COLON}</strong> {postrow.POSTER_JOINED}</dd><!-- ENDIF -->
+		<!-- IF postrow.POSTER_WARNINGS --><dd class="profile-warnings"><strong>{L_WARNINGS}{L_COLON}</strong> {postrow.POSTER_WARNINGS}</dd><!-- ENDIF -->
+
+		<!-- IF postrow.S_PROFILE_FIELD1 -->
+			<!-- Use a construct like this to include admin defined profile fields. Replace FIELD1 with the name of your field. -->
+			<dd><strong>{postrow.PROFILE_FIELD1_NAME}{L_COLON}</strong> {postrow.PROFILE_FIELD1_VALUE}</dd>
+		<!-- ENDIF -->
+
+		<!-- EVENT viewtopic_body_postrow_custom_fields_before -->
+		<!-- BEGIN custom_fields -->
+			<!-- IF not postrow.custom_fields.S_PROFILE_CONTACT -->
+				<dd class="profile-custom-field profile-{postrow.custom_fields.PROFILE_FIELD_IDENT}"><strong>{postrow.custom_fields.PROFILE_FIELD_NAME}{L_COLON}</strong> {postrow.custom_fields.PROFILE_FIELD_VALUE}</dd>
+			<!-- ENDIF -->
+		<!-- END custom_fields -->
+		<!-- EVENT viewtopic_body_postrow_custom_fields_after -->
+
+		<!-- EVENT viewtopic_body_contact_fields_before -->
+		<!-- IF not S_IS_BOT and .postrow.contact -->
+			<dd class="profile-contact">
+				<strong>{L_CONTACT}{L_COLON}</strong>
+				<div class="dropdown-container dropdown-left">
+					<a href="#" class="dropdown-trigger" title="{postrow.CONTACT_USER}">
+						<i class="icon fa-commenting-o fa-fw icon-lg" aria-hidden="true"></i><span class="sr-only">{postrow.CONTACT_USER}</span>
+					</a>
+					<div class="dropdown">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents contact-icons">
+							<!-- BEGIN contact -->
+								{% set REMAINDER = postrow.contact.S_ROW_COUNT % 4 %}
+								<!-- DEFINE $S_LAST_CELL = ((REMAINDER eq 3) or (postrow.contact.S_LAST_ROW and postrow.contact.S_NUM_ROWS < 4)) -->
+								<!-- IF REMAINDER eq 0 -->
+									<div>
+								<!-- ENDIF -->
+									<a href="<!-- IF postrow.contact.U_CONTACT -->{postrow.contact.U_CONTACT}<!-- ELSE -->{postrow.U_POST_AUTHOR}<!-- ENDIF -->" title="{postrow.contact.NAME}"<!-- IF $S_LAST_CELL --> class="last-cell"<!-- ENDIF --><!-- IF postrow.contact.ID eq 'jabber' --> onclick="popup(this.href, 750, 320); return false;"<!-- ENDIF -->>
+										<span class="contact-icon {postrow.contact.ID}-icon">{postrow.contact.NAME}</span>
+									</a>
+								<!-- IF REMAINDER eq 3 or postrow.contact.S_LAST_ROW -->
+									</div>
+								<!-- ENDIF -->
+							<!-- END contact -->
+						</div>
+					</div>
+				</div>
+			</dd>
+		<!-- ENDIF -->
+		<!-- EVENT viewtopic_body_contact_fields_after -->
+
+		</dl>
+line 33- 42, Post Reply button, deleted 
+	<!-- IF not S_IS_BOT and S_DISPLAY_REPLY_INFO -->
+		<a href="{U_POST_REPLY_TOPIC}" class="button" title="<!-- IF S_IS_LOCKED -->{L_TOPIC_LOCKED}<!-- ELSE -->{L_POST_REPLY}<!-- ENDIF -->">
+			<!-- IF S_IS_LOCKED -->
+				<span>{L_BUTTON_TOPIC_LOCKED}</span> <i class="icon fa-lock fa-fw" aria-hidden="true"></i>
+			<!-- ELSE -->
+				<span>{L_BUTTON_POST_REPLY}</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+			<!-- ENDIF -->
+		</a>
+
+	<!-- ENDIF -->
+line 377-385, Post Reply button, deleted
+	<!-- IF not S_IS_BOT and S_DISPLAY_REPLY_INFO -->
+	<a href="{U_POST_REPLY_TOPIC}" class="button" title="<!-- IF S_IS_LOCKED -->{L_TOPIC_LOCKED}<!-- ELSE -->{L_POST_REPLY}<!-- ENDIF -->">
+			<!-- IF S_IS_LOCKED -->
+				<span>{L_BUTTON_TOPIC_LOCKED}</span> <i class="icon fa-lock fa-fw" aria-hidden="true"></i>
+			<!-- ELSE -->
+				<span>{L_BUTTON_POST_REPLY}</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+			<!-- ENDIF -->
+		</a>
+	<!-- ENDIF -->
+
+
+
+line 41-43, sorting function, deleted
+				<form method="post" action="{S_TOPIC_ACTION}">
+		<!-- INCLUDE display_options.html -->
+		</form>
+line 55- 62 AND line 415-422, pagination  Page 1 of 1, commented
+line 50 - 63
+	<!-- **** remove line50 - 63 -->	<div class="search-box" role="search">
+			<form method="get" id="topic-search" action="{S_SEARCHBOX_ACTION}">
+			<fieldset>
+				<input class="inputbox search tiny"  type="search" name="keywords" id="search_keywords" size="20" placeholder="{L_SEARCH_TOPIC}" />
+				<button class="button button-search" type="submit" title="{L_SEARCH}">
+					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH}</span>
+				</button>
+				<a href="{U_SEARCH}" class="button button-search-end" title="{L_SEARCH_ADV}">
+					<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH_ADV}</span>
+				</a>
+				{S_SEARCH_LOCAL_HIDDEN_FIELDS}
+			</fieldset>
+			</form>
+		</div>
+	<!-- *** Comment line 249 - 274 --> <!-- IF postrow.U_REPORT -->
+						<li>
+							<a href="{postrow.U_REPORT}" title="{L_REPORT_POST}" class="button button-icon-only">
+								<i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">{L_REPORT_POST}</span>
+							</a>
+						</li>
+					<!-- ENDIF -->
+					<!-- IF postrow.U_WARN -->
+						<li>
+							<a href="{postrow.U_WARN}" title="{L_WARN_USER}" class="button button-icon-only">
+								<i class="icon fa-exclamation-triangle fa-fw" aria-hidden="true"></i><span class="sr-only">{L_WARN_USER}</span>
+							</a>
+						</li>
+					<!-- ENDIF -->
+					<!-- IF postrow.U_INFO -->
+						<li>
+							<a href="{postrow.U_INFO}" title="{L_INFORMATION}" class="button button-icon-only">
+								<i class="icon fa-info fa-fw" aria-hidden="true"></i><span class="sr-only">{L_INFORMATION}</span>
+							</a>
+						</li>
+					<!-- ENDIF -->
+					<!-- IF postrow.U_QUOTE -->
+						<li>
+							<a href="{postrow.U_QUOTE}" title="{L_REPLY_WITH_QUOTE}" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">{L_QUOTE}</span>
+							</a>
+						</li>
+line 389-395
+	<!-- *** remove line 389 - 395 -->	<a href="{U_POST_REPLY_TOPIC}" class="button" title="<!-- IF S_IS_LOCKED -->{L_TOPIC_LOCKED}<!-- ELSE -->{L_POST_REPLY}<!-- ENDIF -->">
+			<!-- IF S_IS_LOCKED -->
+				<span>{L_BUTTON_TOPIC_LOCKED}</span> <i class="icon fa-lock fa-fw" aria-hidden="true"></i>
+			<!-- ELSE -->
+				<span>{L_BUTTON_POST_REPLY}</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+			<!-- ENDIF -->
+		</a>
