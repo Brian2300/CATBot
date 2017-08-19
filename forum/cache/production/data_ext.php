@@ -1,4 +1,0 @@
-<?php exit; ?>
-1534395991
-688
-a:4:{s:16:"anavaro/postlove";a:4:{s:8:"ext_name";s:16:"anavaro/postlove";s:10:"ext_active";s:1:"0";s:9:"ext_state";s:4:"b:0;";s:8:"ext_path";s:21:"ext/anavaro/postlove/";}s:21:"kasimi/logoutredirect";a:4:{s:8:"ext_name";s:21:"kasimi/logoutredirect";s:10:"ext_active";s:1:"1";s:9:"ext_state";s:4:"b:0;";s:8:"ext_path";s:26:"ext/kasimi/logoutredirect/";}s:13:"phpbb/viglink";a:4:{s:8:"ext_name";s:13:"phpbb/viglink";s:10:"ext_active";s:1:"1";s:9:"ext_state";s:4:"b:0;";s:8:"ext_path";s:18:"ext/phpbb/viglink/";}s:20:"robertheim/topictags";a:4:{s:8:"ext_name";s:20:"robertheim/topictags";s:10:"ext_active";s:1:"1";s:9:"ext_state";s:4:"b:0;";s:8:"ext_path";s:25:"ext/robertheim/topictags/";}}
