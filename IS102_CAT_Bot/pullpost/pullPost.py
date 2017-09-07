@@ -1,6 +1,7 @@
 '''
-Created on Jul 21, 2017
-@author: Brian
+Created on 15 Aug 2017
+
+@author: jiaqi
 '''
 '''
 pull the latest post
