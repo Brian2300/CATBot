@@ -1,3 +1,9 @@
+'''
+Created on 10 Jun 2017
+
+@author: jiaqi
+'''
+
 import logging
 from telegram import *
 import threading
@@ -17,7 +23,7 @@ import requests
 
 from datetime import datetime
 import post_class_summary
-from post_class_summary import post_class_s
+from post_class_summary import post_class_s, post_class_summary_db
 
 #from Bot.askQuestion import ask_question
  
@@ -85,22 +91,29 @@ def button(bot, update):
     elif query.data == "Consultation":
         consultation(bot, update)
     elif query.data == 'Post Class Summary':
-        #create status dictionary.
-        status = post_class_summary.post_class_s.create_status_dic(bot,update)
-        #print (status)
-        #Iterate status dictionary to reset function.
-        for key in status:
-            if key == 0:
-                status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.ask_current_week)]               
-            else: 
-                status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.receive_answer_send_rest_questions)]
-        
-        #print(status)
-        #create converstionHandler.
-        create_conversationHandler(status)
-        bot.edit_message_text(text="Hi! I will help you to record your class participation. Click on this if you are ready: /Go",
-                              chat_id=query.message.chat_id,
-                              message_id=query.message.message_id)                     
+        #check if the user has already submitted current week's form.            
+        submitted = post_class_summary.post_class_s.check_submission_status(bot,update)
+        if submitted == False:
+            #create status dictionary.
+            status = post_class_summary.post_class_s.create_status_dic(bot,update)
+            #print (status)
+            #Iterate status dictionary to reset function.
+            for key in status:
+                if key == len(status)-1:
+                    status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.update_week)]               
+                else: 
+                    status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.receive_answer_send_rest_questions)]
+            
+            #print(status)
+            #create converstionHandler.
+            create_conversationHandler(status)
+            bot.edit_message_text(text="Hi! I will help you to record your class participation. Click on this if you are ready: /Go \n\nNote: Please make sure you typed in correctly before you send to me.",
+                                  chat_id=query.message.chat_id,
+                                  message_id=query.message.message_id) 
+        else:
+            bot.edit_message_text(text="Hi! You have already submitted the participation form for this week!",
+                                  chat_id=query.message.chat_id,
+                                  message_id=query.message.message_id)                                 
     else: 
                  
         bot.edit_message_text(text="Selected option: %s" % query.data,
@@ -229,6 +242,7 @@ updater.dispatcher.add_handler(CommandHandler('start', filter, pass_args=True))
 updater.dispatcher.add_handler(CommandHandler('email', registration.register.smu_email_input, pass_args=True))
 updater.dispatcher.add_handler(CommandHandler('code', registration.register.verify_veri_code, pass_args=True))
 updater.dispatcher.add_handler(CommandHandler('gid', registration.register.group_id, pass_args=True))
+updater.dispatcher.add_handler(CommandHandler('nickname', registration.register.forum_nickname, pass_args=True)) 
 updater.dispatcher.add_handler(CommandHandler('pwd',registration.register.web_password, pass_args=True))  
 
 updater.dispatcher.add_handler(CommandHandler('ta', start))
@@ -245,9 +259,7 @@ def create_conversationHandler(status_para):
         fallbacks=[CommandHandler('cancel', cancel)]
                                                         
         ))
-
-
-updater.dispatcher.add_handler(CommandHandler('test', post_class_summary.post_class_s.post_class_summary))
+    
 
 updater.dispatcher.add_handler(CommandHandler('help', help))
 updater.dispatcher.add_error_handler(error)

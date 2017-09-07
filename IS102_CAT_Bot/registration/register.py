@@ -167,12 +167,62 @@ def group_id(bot, update, args):
     if len(args) !=0:
         if args[0][0] == "G" or args[0][0] == "g":
             registration.verifyRegistration.insert_group_id(chat_id, args[0].upper())
-            update.message.reply_text('Last step! Choose a password for yourself and remember it. It will be used when you log in to CAT web portal. Make sure you use the format below: \n\n/pwd [Your password] \n\nReplace [Your Password] with your own password.\n\nFor example: \n/pwd tele123 \n\nNOTE: Do not contain any white spaces within your password.')
+            update.message.reply_text('OK! Now, please choose a nickname for yourself and let me know. It will be your forum username. \n\nPlease use the format: \n\n/nickname [Your nickname] \n\nReplace [Your nickname] with what you want to be called.\n\nFor example: \n/nickname SpiderMan')
         else:
             update.message.reply_text('Wrong input!! Your group_id needs to start with a "G" or "g".') 
                
     else:
         update.message.reply_text('Wrong input!! Please use the correct format.') 
+
+
+
+
+"""This method runs after the users provide their nickname"""        
+def forum_nickname(bot,update,args):
+    # retrieve user's chat_id from update.
+    chat_id = update.message.chat.id    
+    if len(args) != 0:
+        if args[0]=="":
+            # nickname cannot be empty string.
+            update.message.reply_text('Your nickname cannot be empty! Please enter again!')
+        elif len(args) == 1:
+            # if the nickname itself does not contain empty spaces.
+                #check whether the username is used.
+                    #check the username from database.
+            avatar_id = registration.verifyRegistration.retrieve_avatar_name(args[0])  
+                    # if
+            if avatar_id is not None:
+                update.message.reply_text('The username is already been used! Please choose another one.')
+            else:
+                registration.verifyRegistration.insert_nickname(args[0]) 
+                #retrieve generated avatar_id 
+                avatar_id = registration.verifyRegistration.retrieve_avatar_id(args[0])
+                #insert into student table.
+                registration.verifyRegistration.input_avatar_id(avatar_id[0],chat_id)
+                update.message.reply_text('Last step! Please choose a password for yourself and remember it. It will be your password to log in to CAT forum! \n\nPlease use format: \n\n/pwd [Your Password]. \n\nReplace [Your Password] with your own password.\n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+        else:
+            # if the nickname contain empty spaces.
+            nickname = ""
+            
+            for index in range(len(args)):
+                nickname += args[index]
+                nickname += " "
+                #check whether the username is used.
+                    #check the username from database.
+            avatar_id = registration.verifyRegistration.retrieve_avatar_name(nickname)  
+                    # if
+            if avatar_id is not None:
+                update.message.reply_text('The username is already been used! Please choose another one.')
+            else:                
+                registration.verifyRegistration.insert_nickname(nickname)
+                #retrieve generated avatar_id 
+                avatar_id = registration.verifyRegistration.retrieve_avatar_id(nickname)
+                #insert into student table.
+                registration.verifyRegistration.input_avatar_id(avatar_id[0],chat_id)
+                update.message.reply_text('Last step! Please choose a password for yourself and remember it. It will be your password to log in to CAT forum! \n\nPlease use format: \n\n/pwd [Your Password]. \n\nReplace [Your Password] with your own password.\n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+        
+    else:
+        update.message.reply_text('Wrong input!! Please use the correct format.')
         
         
         
@@ -197,6 +247,9 @@ def web_password(bot,update,args):
             update.message.reply_text('Your password cannot contain white spaces! Please enter again!')
     else:
         update.message.reply_text('Wrong input!! Please use the correct format.')
+
+
+
         
         
           

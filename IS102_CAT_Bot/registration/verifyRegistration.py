@@ -26,8 +26,8 @@ def first_insert(chat_id,tele_username,veri_code,temp_id):
     try:
         with connection.cursor() as cursor:
             # Create a new record
-            sql = "INSERT INTO `student` (`smu_email_id`, `chat_id`,`tele_username`, `veri_code`,`temp_smu_email_address`) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(sql, (smu_email_id, chat_id, tele_username, veri_code, temp_id))
+            sql = "INSERT INTO `student` (`smu_email_id`, `chat_id`,`avatar_id`, `tele_username`, `veri_code`,`temp_smu_email_address`) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql, (smu_email_id, chat_id,-1, tele_username, veri_code, temp_id))
     
         # connection is not autocommit by default. So you must commit to save the changes.
         connection.commit()
@@ -168,8 +168,66 @@ def insert_group_id(chat_id, group_id):
         # connection is not autocommit by default. So you must commit to save the changes.
         connection.commit()                       
     finally:
-        connection.close()    
+        connection.close()
 
+
+
+"""This method inserts nickname into database 'avatar' table."""        
+def insert_nickname(nickname):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+    
+    try:
+        # insert nickname into database.
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO `avatar` (`avatar_name`,`icon`, `avatar_qa_coin`,`avatar_thoughtfulness_score`,`section_id`,`is_bot`) VALUES (%s, %s, %s, %s,%s,%s)"
+            cursor.execute(sql, (nickname,2,3,4,5,6))
+            
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+    finally:
+        connection.close()      
+
+
+
+"""This method retrieves the generated avatar_id from 'avatar' table """  
+def retrieve_avatar_id(avatar_name):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `avatar_id` FROM `avatar` WHERE `avatar_name` = %s"
+            cursor.execute(sql, (avatar_name))
+            result = cursor.fetchone()
+            
+    finally:
+        connection.close()    
+        return result  
+
+
+
+"""This method insert(update) the avatar_id into 'student' table"""     
+def input_avatar_id(avatar_id,chat_id): 
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+
+    try:
+        # insert password into database.
+        with connection.cursor() as cursor:
+            sql = "UPDATE `student` SET `avatar_id` = %s WHERE `chat_id` = %s"
+            cursor.execute(sql, (avatar_id,chat_id))
+            
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+    finally:
+        connection.close()         
 
 
 """This method inserts password hash value into database."""
@@ -229,3 +287,21 @@ def delete_duplicate_chat_id(chat_id):
     finally:
         connection.close()          
 
+
+
+"""This method checks the avatar_name from 'avatar' table"""
+def retrieve_avatar_name(avatar_name):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `avatar_id` FROM `avatar` WHERE `avatar_name` = %s"
+            cursor.execute(sql, (avatar_name))
+            result = cursor.fetchone()
+            
+    finally:
+        connection.close()    
+        return result          
