@@ -3,10 +3,6 @@ Created on 15 Aug 2017
 
 @author: jiaqi
 '''
-'''
-pull the latest post
-pull all post
-'''
 
 import pymysql.cursors
 
