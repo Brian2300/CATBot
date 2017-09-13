@@ -312,6 +312,25 @@ def update_week_db(smu_em_id, week_num):
         
 
 
+"""This method update the all week field for a student in 'post_class_summary_answer' table """
+def update_all_week_db(smu_em_id, week_num, cur_week_prof):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database) 
+        
+    try:
+        with connection.cursor() as cursor:
+            sql = "UPDATE `post_class_summary_answer` SET `week` = %s  WHERE `smu_email_id` = %s AND `week` = %s"
+            cursor.execute(sql, (week_num,smu_em_id,cur_week_prof))
+ 
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+             
+    finally:
+        connection.close() 
+
+
 """This method retrieves the current week from 'weekly_class_participation'"""
 def retrieve_cur_week():
     connection = pymysql.connect(host = hostname,
@@ -347,6 +366,73 @@ def check_post_class_summary_submission(week, smu_email_id):
     finally:
         connection.close()    
     return result 
+
+
+
+"""This method deletes the remaining entries for a particular student in 'left_post_class_question' table """
+def delete_left(smu_email_id):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database) 
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM `left_post_class_question` WHERE `smu_email_id` = %s"
+            cursor.execute(sql, (smu_email_id))
+
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+                   
+    finally:
+        connection.close()      
+
+
+
+"""This method deletes the answers for a particular student for the current week (unfinished post_class_summary form)"""  
+def delete_answer(smu_email_id, week):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+        
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM `post_class_summary_answer` WHERE `smu_email_id` = %s and `week` = %s"
+            cursor.execute(sql, (smu_email_id, week))
+
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+                   
+    finally:
+        connection.close()   
+
+
+
+"""This method update any previous week unfinished week column."""
+def update_previous_unfinished(week_num, smu_em_id):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "UPDATE `post_class_summary_answer` SET `week` = %s  WHERE `smu_email_id` = %s AND `week` = 20"
+            cursor.execute(sql, (week_num,smu_em_id))
+ 
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+             
+    finally:
+        connection.close()      
+    
+    
+    
+    
+
+
+
 
     
     

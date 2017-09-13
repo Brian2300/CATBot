@@ -91,29 +91,22 @@ def button(bot, update):
     elif query.data == "Consultation":
         consultation(bot, update)
     elif query.data == 'Post Class Summary':
-        #check if the user has already submitted current week's form.            
-        submitted = post_class_summary.post_class_s.check_submission_status(bot,update)
-        if submitted == False:
-            #create status dictionary.
-            status = post_class_summary.post_class_s.create_status_dic(bot,update)
-            #print (status)
-            #Iterate status dictionary to reset function.
-            for key in status:
-                if key == len(status)-1:
-                    status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.update_week)]               
-                else: 
-                    status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.receive_answer_send_rest_questions)]
-            
-            #print(status)
-            #create converstionHandler.
-            create_conversationHandler(status)
-            bot.edit_message_text(text="Hi! I will help you to record your class participation. Click on this if you are ready: /Go \n\nNote: Please make sure you typed in correctly before you send to me.",
-                                  chat_id=query.message.chat_id,
-                                  message_id=query.message.message_id) 
-        else:
-            bot.edit_message_text(text="Hi! You have already submitted the participation form for this week!",
-                                  chat_id=query.message.chat_id,
-                                  message_id=query.message.message_id)                                 
+        #create status dictionary.
+        status = post_class_summary.post_class_s.create_status_dic(bot,update)
+        #print (status)
+        #Iterate status dictionary to reset function.
+        for key in status:
+            if key == len(status)-1:
+                status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.update_week)]               
+            else: 
+                status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.receive_answer_send_rest_questions)]
+        
+        #print(status)
+        #create converstionHandler.
+        create_conversationHandler(status)
+        bot.edit_message_text(text="Hi! I will help you to record your class participation.\n\nClick on this if you are ready: /Go ",
+                              chat_id=query.message.chat_id,
+                              message_id=query.message.message_id)                                 
     else: 
                  
         bot.edit_message_text(text="Selected option: %s" % query.data,
@@ -228,7 +221,7 @@ def error(bot, update, error):
 
 
 # Create the Updater and pass it your bot's token.
-updater = Updater("392616716:AAGBjxAMrBF6iNB8YwL3dDqP-LrB82HOjhc")
+updater = Updater("429775448:AAEb0qgYBV9s797I9c9_2e5qFIasucpV7Ao")
 
 #create commandhandlers.
 #new!
@@ -260,7 +253,6 @@ def create_conversationHandler(status_para):
                                                         
         ))
     
-
 updater.dispatcher.add_handler(CommandHandler('help', help))
 updater.dispatcher.add_error_handler(error)
 

@@ -11,23 +11,19 @@ from post_class_summary import post_class_summary_db
 
 
 
-"""This method checks if the user has submitted current week's form"""
-def check_submission_status(bot,update):
+"""This method deletes the entries for a particular user in 'left_post_class_question' table as well as 'post_class_summary answer' table"""
+def clear_before_start(bot,update):
+    #chat_id
+    chat_id = update.message.chat.id
+    #retrieve smu_email_id by chat_id
+    smu_e_id = post_class_summary_db.retrieve_smu_email_id(chat_id)
+    
+    #Delete the remaining entries for the particular student in 'left_post_class_question' table.
+    post_class_summary_db.delete_left(smu_e_id)
     #retrieve current week
     cur_week = post_class_summary_db.retrieve_cur_week()
-    #chat_id
-    query = update.callback_query
-    chat_id = query.message.chat_id 
-    #retireve smu_email_id by chat_id
-    smu_e_id = post_class_summary_db.retrieve_smu_email_id(chat_id)
-    #check record in 'post_class_summary_answer' table
-    record = post_class_summary_db.check_post_class_summary_submission(cur_week,smu_e_id) 
-    
-    if record is None:
-        return False
-    else:
-        return True
-
+    #Delete the existing answers for a particular student in current week in 'post_class_summary_answer' table.
+    post_class_summary_db.delete_answer(smu_e_id, cur_week) 
 
 
 
@@ -55,6 +51,7 @@ def create_status_dic(bot,update):
 
 """This method updates the ' left_post_class_question' table and triggers to send out the first question."""
 def post_class_summary(bot,update):
+    clear_before_start(bot, update) 
     #retrieve the avatar_id of professor.    
         #chat_id
     chat_id = update.message.chat.id
@@ -100,7 +97,9 @@ def receive_answer_send_rest_questions(bot,update):
     answer = update.message.text
     #insert
     post_class_summary_db.insert_post_class_answers(smu_email_id_gid[0], row_qid[1], question_hist[0], answer, smu_email_id_gid[1])
-        
+    #retrieve the cur_week(trust professor) to update the week.
+    cur_week = post_class_summary_db.retrieve_cur_week()   
+    post_class_summary_db.update_week_db(smu_email_id_gid[0], cur_week)
     #delete the min entry in 'left_post_class_question' table. 
     post_class_summary_db.delete_min_row_qid(smu_email_id_gid[0], row_qid[0])
     #retrieve the next min row_num and question_id from 'left_post_class_question' table for a particular student.
@@ -116,6 +115,7 @@ def receive_answer_send_rest_questions(bot,update):
             'Hi! Let me know the current week! ',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)) 
         states_code = row_qid[0]
+        #print ("this is %s" % states_code)
         return states_code      
         
     else:
@@ -126,6 +126,7 @@ def receive_answer_send_rest_questions(bot,update):
         update.message.reply_text(new_question[0])
         
         states_code = new_min_row[0]-1
+        #print ("this is %s" % states_code)
         return states_code
 
 
@@ -139,11 +140,15 @@ def update_week(bot,update):
     #week
     week = update.message.text
     week_num = week.split("k",1)[1] 
+    #print(week_num)
+    #retrieve current week
+    cur_week_prof = post_class_summary_db.retrieve_cur_week()    
     #update table 'post_class_summary_answers' using week = 20
-    post_class_summary_db.update_week_db(smu_em_id,week_num)
+    post_class_summary_db.update_all_week_db(smu_em_id,week_num,cur_week_prof)
     #reply and end conversation.
     update.message.reply_text("Your response has been successfully recorded!")
     return ConversationHandler.END    
+
     
 
 
