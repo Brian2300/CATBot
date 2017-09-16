@@ -8,6 +8,7 @@ import logging
 from telegram import *
 #InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+import telegram
 
 import smtplib
 from  email.mime.multipart import MIMEMultipart
@@ -19,6 +20,7 @@ import registration.verifyRegistration
 
 import hashlib
 
+import property
 
 
 '''This method check registration status and displays register button'''   
@@ -158,74 +160,95 @@ def verify_veri_code(bot, update, args):
         update.message.reply_text('Wrong input!! Please use the correct format.')
         
         
-        
+      
 """This method runs after the user input their group_id"""
 def group_id(bot, update, args):
     # retrieve user's chat_id from update.
     chat_id = update.message.chat.id
+    
+    if len(args) !=0:        
+        #there is no space within gid.
+        if len(args) == 1:
+            #check letter correction.
+            if args[0][0] == "G" or args[0][0] == "g":
+                #number within maximum section.
+                #if total length of string is 2.(e.g G1, G2)
+                if len(args[0]) == 2:
+                    group_num = int(args[0][1])
+                    if group_num <= property.Maximum_section_num:
+                        registration.verifyRegistration.insert_group_id(chat_id, args[0].upper())
+                        # assign avatar_name for the student.
+                        assigned_name = assign_avatar_name(chat_id)
+                        if assigned_name is not None:
+                            update.message.reply_text('Okay, I get your group id!')
+                            bot.send_message(chat_id=chat_id, 
+                                text="And I have created a username for you to login to CAT forum. \n\n*Username*:  *%s* " % assigned_name,
+                                parse_mode=telegram.ParseMode.MARKDOWN)
+                            #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+                        else:
+                            update.message.reply_text('Okay, I get your group id!')
+                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT forum.Let professor know and continue with the registration.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')                
+                    else:
+                        update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
+                elif len(args[0]) == 3:  #G10
+                    group_num_big_str = args[0][1]+args[0][2]
+                    group_num_big = int(group_num_big_str)
+                    if group_num_big <= property.Maximum_section_num:
+                        registration.verifyRegistration.insert_group_id(chat_id, args[0].upper())
+                        # assign avatar_name for the student.
+                        assigned_name = assign_avatar_name(chat_id)
+                        if assigned_name is not None:
+                            update.message.reply_text('Okay, I get your group id!')
+                            bot.send_message(chat_id=chat_id, 
+                                text="And I have created a username for you to login to CAT forum. \n\n*Username*:  *%s* " % assigned_name,
+                                parse_mode=telegram.ParseMode.MARKDOWN)
+                            #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+                        else:
+                            update.message.reply_text('Okay, I get your group id!')
+                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT forum.Let professor know and continue with the registration.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')                
+                    else:
+                        update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
+                else:    
+                    update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')                   
+            else:
+                update.message.reply_text('Wrong input!! Your group_id needs to start with a "G" or "g". Please enter again.') 
         
-    if len(args) !=0:
-        if args[0][0] == "G" or args[0][0] == "g":
-            registration.verifyRegistration.insert_group_id(chat_id, args[0].upper())
-            update.message.reply_text('OK! Now, please choose a nickname for yourself and let me know. It will be your forum username. \n\nPlease use the format: \n\n/nickname [Your nickname] \n\nReplace [Your nickname] with what you want to be called.\n\nFor example: \n/nickname SpiderMan')
+        elif len(args) == 2:
+            if args[0] == "G" or args[0] == "g":
+                group_num = int(args[1])
+                if group_num <= property.Maximum_section_num:
+                    groupid = args[0]+args[1]
+                    registration.verifyRegistration.insert_group_id(chat_id, groupid.upper())
+                    # assign avatar_name for the student.
+                    assigned_name = assign_avatar_name(chat_id)
+                    if assigned_name is not None:
+                        update.message.reply_text('Okay, I get your group id!')
+                        bot.send_message(chat_id=chat_id, 
+                            text="And I have created a username for you to login to CAT forum. \n\n*Username*:  *%s* " % assigned_name,
+                            parse_mode=telegram.ParseMode.MARKDOWN)
+                        #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
+                        update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+                    else:
+                        update.message.reply_text('Okay, I get your group id!')
+                        update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT forum.Let professor know and continue with the registration.')
+                        update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')                
+                else:
+                    update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')                    
+                
+            else:
+                update.message.reply_text('Wrong input!! Your group_id needs to start with a "G" or "g". Please enter again.')             
         else:
-            update.message.reply_text('Wrong input!! Your group_id needs to start with a "G" or "g".') 
-               
+            update.message.reply_text('Wrong input!!')  
     else:
         update.message.reply_text('Wrong input!! Please use the correct format.') 
-
-
-
-
-"""This method runs after the users provide their nickname"""        
-def forum_nickname(bot,update,args):
-    # retrieve user's chat_id from update.
-    chat_id = update.message.chat.id    
-    if len(args) != 0:
-        if args[0]=="":
-            # nickname cannot be empty string.
-            update.message.reply_text('Your nickname cannot be empty! Please enter again!')
-        elif len(args) == 1:
-            # if the nickname itself does not contain empty spaces.
-                #check whether the username is used.
-                    #check the username from database.
-            avatar_id = registration.verifyRegistration.retrieve_avatar_name(args[0])  
-                    # if
-            if avatar_id is not None:
-                update.message.reply_text('The username is already been used! Please choose another one.')
-            else:
-                registration.verifyRegistration.insert_nickname(args[0]) 
-                #retrieve generated avatar_id 
-                avatar_id = registration.verifyRegistration.retrieve_avatar_id(args[0])
-                #insert into student table.
-                registration.verifyRegistration.input_avatar_id(avatar_id[0],chat_id)
-                update.message.reply_text('Last step! Please choose a password for yourself and remember it. It will be your password to log in to CAT forum! \n\nPlease use format: \n\n/pwd [Your Password]. \n\nReplace [Your Password] with your own password.\n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
-        else:
-            # if the nickname contain empty spaces.
-            nickname = ""
-            
-            for index in range(len(args)):
-                nickname += args[index]
-                nickname += " "
-                #check whether the username is used.
-                    #check the username from database.
-            avatar_id = registration.verifyRegistration.retrieve_avatar_name(nickname)  
-                    # if
-            if avatar_id is not None:
-                update.message.reply_text('The username is already been used! Please choose another one.')
-            else:                
-                registration.verifyRegistration.insert_nickname(nickname)
-                #retrieve generated avatar_id 
-                avatar_id = registration.verifyRegistration.retrieve_avatar_id(nickname)
-                #insert into student table.
-                registration.verifyRegistration.input_avatar_id(avatar_id[0],chat_id)
-                update.message.reply_text('Last step! Please choose a password for yourself and remember it. It will be your password to log in to CAT forum! \n\nPlease use format: \n\n/pwd [Your Password]. \n\nReplace [Your Password] with your own password.\n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
-        
-    else:
-        update.message.reply_text('Wrong input!! Please use the correct format.')
+    
         
         
-        
+       
 """This method runs after users provide web password."""        
 def web_password(bot,update,args):
     # retrieve user's chat_id from update.
@@ -240,13 +263,41 @@ def web_password(bot,update,args):
             hash_obj = hashlib.sha1(pwd_bytes)
             hex_dig = hash_obj.hexdigest()
             #insert the hash value(in hex) into database.
-            registration.verifyRegistration.insert_password_hash(chat_id,hex_dig)  
+            registration.verifyRegistration.insert_password_hash(chat_id,hex_dig) 
             update.message.reply_text('Woohoo! registration is successful! Please use /help to see what can this bot do for you!')
         else:
             #password cannot contain empty spaces.
             update.message.reply_text('Your password cannot contain white spaces! Please enter again!')
     else:
         update.message.reply_text('Wrong input!! Please use the correct format.')
+
+
+
+"""This method assign a random avatar_name to student"""
+def assign_avatar_name(chat_id):
+    #select a random row from db
+    avatar_name_and_status = registration.verifyRegistration.retrieve_random_row()
+
+    if avatar_name_and_status is None:
+        return None
+    else:          
+        #insert into avatar table.
+        registration.verifyRegistration.insert_avatar(avatar_name_and_status[0])
+        #retrieve generated avatar_id.
+        avatar_id = registration.verifyRegistration.retrieve_avatar_id(avatar_name_and_status[0])
+        #insert into student table.
+        registration.verifyRegistration.input_avatar_id(avatar_id[0],chat_id)
+        #update avatar_name status.
+        registration.verifyRegistration.update_avatar_status(avatar_name_and_status[0])
+        
+        return avatar_name_and_status[0]
+    
+    
+    
+    
+        
+       
+
 
 
 

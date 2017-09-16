@@ -3,12 +3,12 @@ Created on 10 Jun 2017
 
 @author: jiaqi
 '''
-
+import property
 import logging
 from telegram import *
-import threading
-import time
-import datetime
+# import threading
+# import time
+# import datetime
 #InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters
 import registration.register
@@ -17,13 +17,14 @@ from attendance.updateAttendance import check_attendance_code
 from pip.cmdoptions import only_binary
 
 #import pullpost.pullPost
-import urllib
-import json 
-import requests
+# import urllib
+# import json 
+# import requests
 
 from datetime import datetime
 import post_class_summary
 from post_class_summary import post_class_s, post_class_summary_db
+
 
 #from Bot.askQuestion import ask_question
  
@@ -39,7 +40,6 @@ def filter(bot, update, args):
         registration.register.register(bot,update)
     else:
         start(bot, update)
-    
 
 
 
@@ -93,20 +93,33 @@ def button(bot, update):
     elif query.data == 'Post Class Summary':
         #create status dictionary.
         status = post_class_summary.post_class_s.create_status_dic(bot,update)
-        #print (status)
         #Iterate status dictionary to reset function.
         for key in status:
             if key == len(status)-1:
                 status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.update_week)]               
             else: 
                 status[key] = [MessageHandler(Filters.text, post_class_summary.post_class_s.receive_answer_send_rest_questions)]
-        
-        #print(status)
+
         #create converstionHandler.
-        create_conversationHandler(status)
-        bot.edit_message_text(text="Hi! I will help you to record your class participation.\n\nClick on this if you are ready: /Go ",
+        global post_class_conv_handler
+        dp.remove_handler(post_class_conv_handler)
+        post_class_conv_handler = ConversationHandler(
+            entry_points=[CommandHandler('Go', post_class_summary.post_class_s.post_class_summary)],
+            
+            states = status,
+                                    
+            fallbacks=[CommandHandler('cancel', cancel)],
+            
+            per_chat = True,
+            
+            per_user = True
+                                                            
+            )    
+        dp.add_handler(post_class_conv_handler)
+        #print(post_class_conv_handler)
+        bot.edit_message_text(text="Hi! I will help you to record your class participation.\n\nClick on this if you are ready: /Go",
                               chat_id=query.message.chat_id,
-                              message_id=query.message.message_id)                                 
+                              message_id=query.message.message_id)                    
     else: 
                  
         bot.edit_message_text(text="Selected option: %s" % query.data,
@@ -119,10 +132,28 @@ def button(bot, update):
         print(query.message.message_id)
 
 
+
+# def update_conversationHandler(status_para):
+#     post_class_conv_handler = ConversationHandler(
+#         entry_points=[CommandHandler('Go', post_class_summary.post_class_s.post_class_summary)],
+#         
+#         states = status_para,
+#                                 
+#         fallbacks=[CommandHandler('cancel', cancel)],
+#         
+#         per_chat = True,
+#         
+#         per_user = True
+#                                                         
+#         )    
+#     dp.add_handler(post_class_conv_handler)
+    
+
+
 def cancel(bot, update):
     user = update.message.from_user
     logger.info("User %s canceled the conversation." % user.first_name)
-    update.message.reply_text('Bye! I hope we can talk again some day.',
+    update.message.reply_text('Bye! You have stopped the current submission. \n\nTo resubmit, click on /home',
                               reply_markup=ReplyKeyboardRemove())
 
     return ConversationHandler.END
@@ -133,6 +164,7 @@ def help(bot, update):
     update.message.reply_text("""I can help you take attendance, view questions in forum, book consultation as well as record down your class participation.
 \nUse /home command to display home buttons
 \nIf you have any questions or suggestions, please feel free to contact us at: catbot102ise@gmail.com""")
+
 
 
 def error(bot, update, error):
@@ -223,38 +255,44 @@ def error(bot, update, error):
 # Create the Updater and pass it your bot's token.
 updater = Updater("429775448:AAEb0qgYBV9s797I9c9_2e5qFIasucpV7Ao")
 
+dp = updater.dispatcher
+
 #create commandhandlers.
 #new!
 
-updater.dispatcher.add_handler(CommandHandler('home', home))
+dp.add_handler(CommandHandler('home', home))
 
-updater.dispatcher.add_handler(CallbackQueryHandler(button))
+dp.add_handler(CallbackQueryHandler(button))
 # package.module.function
 
-updater.dispatcher.add_handler(CommandHandler('start', filter, pass_args=True))
-updater.dispatcher.add_handler(CommandHandler('email', registration.register.smu_email_input, pass_args=True))
-updater.dispatcher.add_handler(CommandHandler('code', registration.register.verify_veri_code, pass_args=True))
-updater.dispatcher.add_handler(CommandHandler('gid', registration.register.group_id, pass_args=True))
-updater.dispatcher.add_handler(CommandHandler('nickname', registration.register.forum_nickname, pass_args=True)) 
-updater.dispatcher.add_handler(CommandHandler('pwd',registration.register.web_password, pass_args=True))  
+dp.add_handler(CommandHandler('start', filter, pass_args=True))
+dp.add_handler(CommandHandler('email', registration.register.smu_email_input, pass_args=True))
+dp.add_handler(CommandHandler('code', registration.register.verify_veri_code, pass_args=True))
+dp.add_handler(CommandHandler('gid', registration.register.group_id, pass_args=True))
+dp.add_handler(CommandHandler('pwd',registration.register.web_password, pass_args=True))  
 
-updater.dispatcher.add_handler(CommandHandler('ta', start))
+dp.add_handler(CommandHandler('ta', start))
 #updater.dispatcher.add_handler(CommandHandler('AskQuestion', ask_question, pass_args = True))
 
 
-def create_conversationHandler(status_para):
+#def create_conversationHandler(status_para):
     
-    updater.dispatcher.add_handler(ConversationHandler(
-        entry_points=[CommandHandler('Go', post_class_summary.post_class_s.post_class_summary)],
-        
-        states = status_para,
-                                
-        fallbacks=[CommandHandler('cancel', cancel)]
-                                                        
-        ))
-    
-updater.dispatcher.add_handler(CommandHandler('help', help))
-updater.dispatcher.add_error_handler(error)
+post_class_conv_handler = ConversationHandler(
+    entry_points=[CommandHandler('Go', post_class_summary.post_class_s.post_class_summary)],
+       
+    states = {},
+                               
+    fallbacks=[CommandHandler('cancel', cancel)],
+       
+    per_chat = True,
+       
+    per_user = True
+                                                       
+    )
+ 
+dp.add_handler(post_class_conv_handler)    
+dp.add_handler(CommandHandler('help', help))
+dp.add_error_handler(error)
 
 # Start the Bot
 updater.start_polling()

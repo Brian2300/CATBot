@@ -147,6 +147,7 @@ def update_week(bot,update):
     post_class_summary_db.update_all_week_db(smu_em_id,week_num,cur_week_prof)
     #reply and end conversation.
     update.message.reply_text("Your response has been successfully recorded!")
+    # remove the conversationHandler.
     return ConversationHandler.END    
 
     

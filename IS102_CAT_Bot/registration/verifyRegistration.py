@@ -173,7 +173,7 @@ def insert_group_id(chat_id, group_id):
 
 
 """This method inserts nickname into database 'avatar' table."""        
-def insert_nickname(nickname):
+def insert_avatar(avatar_name):
     connection = pymysql.connect(host = hostname,
                                 user= username,
                                 password=password,
@@ -183,7 +183,7 @@ def insert_nickname(nickname):
         # insert nickname into database.
         with connection.cursor() as cursor:
             sql = "INSERT INTO `avatar` (`avatar_name`,`icon`, `avatar_qa_coin`,`avatar_thoughtfulness_score`,`section_id`,`is_bot`) VALUES (%s, %s, %s, %s,%s,%s)"
-            cursor.execute(sql, (nickname,2,3,4,5,6))
+            cursor.execute(sql, (avatar_name,2,3,4,5,6))
             
         # connection is not autocommit by default. So you must commit to save the changes.
         connection.commit()
@@ -304,4 +304,45 @@ def retrieve_avatar_name(avatar_name):
             
     finally:
         connection.close()    
-        return result          
+        return result   
+
+
+
+"""This method retrieves a random row from 'avatar_name_list' table"""       
+def retrieve_random_row(): ##########change later
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+    
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `avatar_name_list` WHERE `status` = 0 ORDER BY RAND() limit 1"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            
+    finally:
+        connection.close()    
+        return result      
+
+
+
+"""This method update the status of avatar_name """   
+def update_avatar_status(avatar_name):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+    
+    try:
+        # insert password into database.
+        with connection.cursor() as cursor:
+            sql = "UPDATE `avatar_name_list` SET `status` = 1 WHERE `avatar_name` = %s"
+            cursor.execute(sql,(avatar_name))
+            
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+    finally:
+        connection.close()  
+    
+    
