@@ -3,12 +3,13 @@ Created on 10 Jun 2017
 
 @author: jiaqi
 '''
+
 import property
 import logging
 from telegram import *
 # import threading
 # import time
-# import datetime
+import datetime
 #InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters
 import registration.register
@@ -24,6 +25,10 @@ from pip.cmdoptions import only_binary
 from datetime import datetime
 import post_class_summary
 from post_class_summary import post_class_s, post_class_summary_db
+
+import consultation.book_consultation
+
+
 
 
 #from Bot.askQuestion import ask_question
@@ -64,7 +69,7 @@ def start(bot, update):
 
 def home(bot, update):
     keyboard = [[InlineKeyboardButton("Post Class Summary", callback_data='Post Class Summary')],
-                [InlineKeyboardButton("Consultation", callback_data='Consultation')],
+                [InlineKeyboardButton("consultation", callback_data='consultation')],
                 [InlineKeyboardButton("My Profile", callback_data='My Profile')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -73,11 +78,31 @@ def home(bot, update):
     
     
     
-def consultation(bot, update):
-    keyboard = [[InlineKeyboardButton("Book Consultation", callback_data='Book_Consultation'),
-                 InlineKeyboardButton("Check Consultation", callback_data='Check_Consultation')],]
+def consultation_button(bot, update):
+    keyboard = [[InlineKeyboardButton("Book consultation", callback_data='BookConsultation'),
+                 InlineKeyboardButton("Check consultation", callback_data='CheckConsultation')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Please choose:', reply_markup=reply_markup)
+
+
+
+"""to remove button after press"""#!!!!!!!!!!!!!!!!!!!!!!!!!!!
+def dispaly_consultation_button(bot, update):
+    consultation_button(bot, update)
+
+
+
+"""This method the"""
+def validate(query_data_text):
+    start_dateTime = query_data_text.split('     to     ',1)[0]
+    end_dateTime = query_data_text.split('     to     ',1)[1]
+    #print (start_dateTime+"  "+end_dateTime)
+    try:
+        start_dateTime_obj = datetime.strptime(start_dateTime, '%m/%d/%y - %I:%M %p')
+        end_dateTime_obj = datetime.strptime(end_dateTime,'%m/%d/%y - %I:%M %p')
+        return True
+    except ValueError:
+        return False
 
 
 
@@ -88,8 +113,13 @@ def button(bot, update):
     # if the register button is pressed by user
     if query.data == 'register' :
         registration.register.press_register(bot, update)
-    elif query.data == "Consultation":
-        consultation(bot, update)
+    elif query.data == "consultation":
+        dispaly_consultation_button(bot, update)
+        #consultation_button(bot, update)
+    elif query.data == 'BookConsultation':
+        consultation.book_consultation.display_timeslot(bot, update)
+    elif validate(query.data):
+        consultation.book_consultation.finish_booking(bot, update) 
     elif query.data == 'Post Class Summary':
         #create status dictionary.
         status = post_class_summary.post_class_s.create_status_dic(bot,update)
@@ -119,7 +149,7 @@ def button(bot, update):
         #print(post_class_conv_handler)
         bot.edit_message_text(text="Hi! I will help you to record your class participation.\n\nClick on this if you are ready: /Go",
                               chat_id=query.message.chat_id,
-                              message_id=query.message.message_id)                    
+                              message_id=query.message.message_id)                            
     else: 
                  
         bot.edit_message_text(text="Selected option: %s" % query.data,

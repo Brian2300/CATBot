@@ -50,7 +50,7 @@ def press_register(bot, update):
 
     query = update.callback_query
     
-    bot.edit_message_text(text="Alright! What is your smu email address? Please make sure you typed in correctly and use the below format: \n\n/email [Your smu email address] \n\nReplace [Your smu email address] with your actual smu email address.\n\nFor example: \n/email is102_cat@sis.smu.edu.sg",
+    bot.edit_message_text(text="Alright! Key in your smu email address and use the below format: \n\n/email [Your smu email address] \n\nFor example: \n/email is102_cat@sis.smu.edu.sg",
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
 
@@ -89,7 +89,7 @@ def smu_email_input(bot, update, args):
                     registration.verifyRegistration.first_insert(chat_id,tele_username,veri_code,text)
                     #send email
                     send_email(text,veri_code)
-                    update.message.reply_text('An email is sent to you! Please follow the instruction within the email to continue with the registration. \n\nIf you did not receive the email, retry:\n/email [Your smu email address] \n\nAnd make sure you entered your email address correctly.')                    
+                    update.message.reply_text('An email is sent to you! Please follow the instruction within the email to continue with the registration. \n\nIf you did not receive the email, retry:\n/email [Your smu email address]')                    
             else:
                 update.message.reply_text('An email has already sent to you! Please follow the instruction within the email to continue with the registration.')
         else:
@@ -182,14 +182,14 @@ def group_id(bot, update, args):
                         if assigned_name is not None:
                             update.message.reply_text('Okay, I get your group id!')
                             bot.send_message(chat_id=chat_id, 
-                                text="And I have created a username for you to login to CAT forum. \n\n*Username*:  *%s* " % assigned_name,
+                                text="And I have created a username for you to login to CAT website. \n\n*Username*:  *%s* " % assigned_name,
                                 parse_mode=telegram.ParseMode.MARKDOWN)
                             #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
-                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
                         else:
                             update.message.reply_text('Okay, I get your group id!')
-                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT forum.Let professor know and continue with the registration.')
-                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')                
+                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT website.Let professor know and continue with the registration.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
                     else:
                         update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
                 elif len(args[0]) == 3:  #G10
@@ -202,14 +202,14 @@ def group_id(bot, update, args):
                         if assigned_name is not None:
                             update.message.reply_text('Okay, I get your group id!')
                             bot.send_message(chat_id=chat_id, 
-                                text="And I have created a username for you to login to CAT forum. \n\n*Username*:  *%s* " % assigned_name,
+                                text="And I have created a username for you to login to CAT website. \n\n*Username*:  *%s* " % assigned_name,
                                 parse_mode=telegram.ParseMode.MARKDOWN)
                             #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
-                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
                         else:
                             update.message.reply_text('Okay, I get your group id!')
-                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT forum.Let professor know and continue with the registration.')
-                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')                
+                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT website.Let professor know and continue with the registration.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
                     else:
                         update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
                 else:    
@@ -228,14 +228,14 @@ def group_id(bot, update, args):
                     if assigned_name is not None:
                         update.message.reply_text('Okay, I get your group id!')
                         bot.send_message(chat_id=chat_id, 
-                            text="And I have created a username for you to login to CAT forum. \n\n*Username*:  *%s* " % assigned_name,
+                            text="And I have created a username for you to login to CAT website. \n\n*Username*:  *%s* " % assigned_name,
                             parse_mode=telegram.ParseMode.MARKDOWN)
                         #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
-                        update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')
+                        update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
                     else:
                         update.message.reply_text('Okay, I get your group id!')
-                        update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT forum.Let professor know and continue with the registration.')
-                        update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT forum! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password \n\nNOTE: Do not contain any white spaces within your password.')                
+                        update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT website.Let professor know and continue with the registration.')
+                        update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
                 else:
                     update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')                    
                 

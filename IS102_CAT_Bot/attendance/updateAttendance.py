@@ -9,6 +9,13 @@ hostname = 'localhost'
 username = 'root'
 password = ''
 database = 'is102_cat'
+ 
+# hostname = '10.0.106.110'
+# username = 'ise'
+# password = 'LARCdata1612!'
+# database = 'ise'
+
+
 
 def check_attendance_code(chat_id, attendance_code):
     '''connect to the data base, use chat_id and attendance_code to check returns true of False

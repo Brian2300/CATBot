@@ -13,6 +13,13 @@ username = 'root'
 password = ''
 database = 'is102_cat'
 
+# hostname = '10.0.106.110'
+# username = 'ise'
+# password = 'LARCdata1612!'
+# database = 'ise'
+
+
+
 
 
 """This method retrieves the group_id of the student from student table"""

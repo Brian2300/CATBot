@@ -13,6 +13,13 @@ username = 'root'
 password = ''
 database = 'is102_cat'
 
+# hostname = '10.0.106.110'
+# username = 'ise'
+# password = 'LARCdata1612!'
+# database = 'ise'
+
+
+
 
 '''This method insert chat_id, veri_code and temp_smu_email_address into db'''
 def first_insert(chat_id,tele_username,veri_code,temp_id):
