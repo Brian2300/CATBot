@@ -30,7 +30,6 @@ import consultation.book_consultation
 
 
 
-
 #from Bot.askQuestion import ask_question
  
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -69,7 +68,7 @@ def start(bot, update):
 
 def home(bot, update):
     keyboard = [[InlineKeyboardButton("Post Class Summary", callback_data='Post Class Summary')],
-                [InlineKeyboardButton("consultation", callback_data='consultation')],
+                [InlineKeyboardButton("Consultation", callback_data='consultation')],
                 [InlineKeyboardButton("My Profile", callback_data='My Profile')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -79,8 +78,8 @@ def home(bot, update):
     
     
 def consultation_button(bot, update):
-    keyboard = [[InlineKeyboardButton("Book consultation", callback_data='BookConsultation'),
-                 InlineKeyboardButton("Check consultation", callback_data='CheckConsultation')]]
+    keyboard = [[InlineKeyboardButton("Book Consultation", callback_data='BookConsultation'),
+                 InlineKeyboardButton("Check My Consultation", callback_data='CheckConsultation')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Please choose:', reply_markup=reply_markup)
 
@@ -120,6 +119,8 @@ def button(bot, update):
         consultation.book_consultation.display_timeslot(bot, update)
     elif validate(query.data):
         consultation.book_consultation.finish_booking(bot, update) 
+    elif query.data == 'CheckConsultation':
+        
     elif query.data == 'Post Class Summary':
         #create status dictionary.
         status = post_class_summary.post_class_s.create_status_dic(bot,update)
