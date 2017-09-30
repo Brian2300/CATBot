@@ -27,6 +27,7 @@ import post_class_summary
 from post_class_summary import post_class_s, post_class_summary_db
 
 import consultation.book_consultation
+import consultation.check_consultation
 
 
 
@@ -85,7 +86,6 @@ def consultation_button(bot, update):
 
 
 
-"""to remove button after press"""#!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def dispaly_consultation_button(bot, update):
     consultation_button(bot, update)
 
@@ -93,9 +93,13 @@ def dispaly_consultation_button(bot, update):
 
 """This method the"""
 def validate(query_data_text):
-    start_dateTime = query_data_text.split('     to     ',1)[0]
-    end_dateTime = query_data_text.split('     to     ',1)[1]
-    #print (start_dateTime+"  "+end_dateTime)
+    try:
+        start_dateTime = query_data_text.split('     to     ',1)[0]
+        end_dateTime = query_data_text.split('     to     ',1)[1]
+        #print (start_dateTime+"  "+end_dateTime)
+    except IndexError:
+        return False
+    
     try:
         start_dateTime_obj = datetime.strptime(start_dateTime, '%m/%d/%y - %I:%M %p')
         end_dateTime_obj = datetime.strptime(end_dateTime,'%m/%d/%y - %I:%M %p')
@@ -120,7 +124,7 @@ def button(bot, update):
     elif validate(query.data):
         consultation.book_consultation.finish_booking(bot, update) 
     elif query.data == 'CheckConsultation':
-        
+        consultation.check_consultation.display_consultation_bookings(bot, update)
     elif query.data == 'Post Class Summary':
         #create status dictionary.
         status = post_class_summary.post_class_s.create_status_dic(bot,update)

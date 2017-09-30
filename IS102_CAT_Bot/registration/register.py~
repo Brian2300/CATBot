@@ -182,38 +182,35 @@ def group_id(bot, update, args):
                         if assigned_name is not None:
                             update.message.reply_text('Okay, I get your group id!')
                             bot.send_message(chat_id=chat_id, 
-                                text="And I have created an avatar name for you to login to CAT website. \n\n*Avatar Name*:  *%s* " % assigned_name,
+                                text="And I have created a username for you to login to CAT website. \n\n*Username*:  *%s* " % assigned_name,
                                 parse_mode=telegram.ParseMode.MARKDOWN)
                             #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
                             update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
                         else:
                             update.message.reply_text('Okay, I get your group id!')
-                            update.message.reply_text('Sorry! We are running out of avatar names to assign to you, the avatar name is for you to login to CAT website.Let professor know and continue with the registration.')
+                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT website.Let professor know and continue with the registration.')
                             update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
                     else:
                         update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
                 elif len(args[0]) == 3:  #G10
-                    try: 
-                        group_num_big_str = args[0][1]+args[0][2]
-                        group_num_big = int(group_num_big_str)
-                        if group_num_big <= property.Maximum_section_num:
-                            registration.verifyRegistration.insert_group_id(chat_id, args[0].upper())
-                            # assign avatar_name for the student.
-                            assigned_name = assign_avatar_name(chat_id)
-                            if assigned_name is not None:
-                                update.message.reply_text('Okay, I get your group id!')
-                                bot.send_message(chat_id=chat_id, 
-                                    text="And I have created an avatar name for you to login to CAT website. \n\n*Avatar Name*:  *%s* " % assigned_name,
-                                    parse_mode=telegram.ParseMode.MARKDOWN)
-                                #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
-                                update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
-                            else:
-                                update.message.reply_text('Okay, I get your group id!')
-                                update.message.reply_text('Sorry! We are running out of avatar names to assign to you, the avatar name is for you to login to CAT website.Let professor know and continue with the registration.')
-                                update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
+                    group_num_big_str = args[0][1]+args[0][2]
+                    group_num_big = int(group_num_big_str)
+                    if group_num_big <= property.Maximum_section_num:
+                        registration.verifyRegistration.insert_group_id(chat_id, args[0].upper())
+                        # assign avatar_name for the student.
+                        assigned_name = assign_avatar_name(chat_id)
+                        if assigned_name is not None:
+                            update.message.reply_text('Okay, I get your group id!')
+                            bot.send_message(chat_id=chat_id, 
+                                text="And I have created a username for you to login to CAT website. \n\n*Username*:  *%s* " % assigned_name,
+                                parse_mode=telegram.ParseMode.MARKDOWN)
+                            #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
                         else:
-                            update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
-                    except ValueError :
+                            update.message.reply_text('Okay, I get your group id!')
+                            update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT website.Let professor know and continue with the registration.')
+                            update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
+                    else:
                         update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')
                 else:    
                     update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')                   
@@ -231,13 +228,13 @@ def group_id(bot, update, args):
                     if assigned_name is not None:
                         update.message.reply_text('Okay, I get your group id!')
                         bot.send_message(chat_id=chat_id, 
-                            text="And I have created an avatar name for you to login to CAT website. \n\n*Avatar Name*:  *%s* " % assigned_name,
+                            text="And I have created a username for you to login to CAT website. \n\n*Username*:  *%s* " % assigned_name,
                             parse_mode=telegram.ParseMode.MARKDOWN)
                         #update.message.reply_text("And I have created a username for you to login to CAT forum. \n\n*username*: *%s* " % assigned_name )
                         update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')
                     else:
                         update.message.reply_text('Okay, I get your group id!')
-                        update.message.reply_text('Sorry! We are running out of avatar names to assign to you, the avatar name is for you to login to CAT website.Let professor know and continue with the registration.')
+                        update.message.reply_text('Sorry! We are running out of usernames to assign to you, the username is for you to login to CAT website.Let professor know and continue with the registration.')
                         update.message.reply_text('Now. Last step!  Please choose a password for yourself. It will be your password to log in to CAT website! \n\nPlease use format: \n/pwd [Your Password]. \n\nFor example: \n/pwd password')                
                 else:
                     update.message.reply_text('Wrong input!! The section is not a valid section. Please enter again.')                    
