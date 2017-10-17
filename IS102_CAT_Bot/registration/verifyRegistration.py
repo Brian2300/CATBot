@@ -351,5 +351,23 @@ def update_avatar_status(avatar_name):
         connection.commit()
     finally:
         connection.close()  
+        
+
+"""This method update qa_coins = 0 to student table."""        
+def insert_qa(chat_id):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
     
+    try:
+        # insert password into database.
+        with connection.cursor() as cursor:
+            sql = "UPDATE `student` SET `qa_coins` = 0 WHERE `chat_id` = %s"
+            cursor.execute(sql,(chat_id))
+            
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+    finally:
+        connection.close() 
     
