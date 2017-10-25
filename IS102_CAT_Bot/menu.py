@@ -28,6 +28,8 @@ from post_class_summary import post_class_s, post_class_summary_db
 
 import consultation.book_consultation
 import consultation.check_consultation
+import forum_linkage.Post_Question
+
 
 
 
@@ -37,7 +39,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
 
 
 def filter(bot, update, args):
@@ -68,9 +69,10 @@ def start(bot, update):
 
 
 def home(bot, update):
-    keyboard = [[InlineKeyboardButton("Post Class Summary", callback_data='Post Class Summary')],
-                [InlineKeyboardButton("Consultation", callback_data='consultation')],
-                [InlineKeyboardButton("My Profile", callback_data='My Profile')]]
+    keyboard = [[InlineKeyboardButton("Post Class Summary", callback_data='Post Class Summary'),
+                 InlineKeyboardButton("Consultation", callback_data='consultation')],
+                [InlineKeyboardButton("My Profile", callback_data='My Profile'),
+                 InlineKeyboardButton("Post to Forum", callback_data='Post to Forum')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -116,6 +118,10 @@ def button(bot, update):
     # if the register button is pressed by user
     if query.data == 'register' :
         registration.register.press_register(bot, update)
+    elif query.data == 'Post to Forum':
+        #send out start message.
+        forum_linkage.Post_Question.startMsg(bot, update)
+        
     elif query.data == "consultation":
         dispaly_consultation_button(bot, update)
         #consultation_button(bot, update)
@@ -324,7 +330,29 @@ post_class_conv_handler = ConversationHandler(
     per_user = True
                                                        
     )
- 
+
+#create conversation handler:
+Post_To_Forum_Handler = ConversationHandler(
+    entry_points=[CommandHandler('Post', forum_linkage.Post_Question.ask_for_title)],
+    
+    states = {
+        0: [MessageHandler(Filters.text, forum_linkage.Post_Question.store_title_ask_for_tag)],
+
+        1: [MessageHandler(Filters.text, forum_linkage.Post_Question.ask_for_content)], 
+
+        2: [MessageHandler(Filters.text, forum_linkage.Post_Question.update_post_content)] 
+
+        },
+                            
+    fallbacks=[CommandHandler('cancel', cancel)],
+    
+    per_chat = True,
+    
+    per_user = True
+                                                
+)
+
+dp.add_handler(Post_To_Forum_Handler)
 dp.add_handler(post_class_conv_handler)    
 dp.add_handler(CommandHandler('help', help))
 dp.add_error_handler(error)

@@ -267,7 +267,7 @@ def web_password(bot,update,args):
             hex_dig = hash_obj.hexdigest()
             #insert the hash value(in hex) into database.
             registration.verifyRegistration.insert_password_hash(chat_id,hex_dig)
-            registration.verifyRegistration.insert_qa(chat_id)
+            registration.verifyRegistration.insert_qa(chat_id) 
             update.message.reply_text('Woohoo! registration is successful! Please use /help to see what can this bot do for you!')
         else:
             #password cannot contain empty spaces.
