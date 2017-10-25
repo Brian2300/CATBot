@@ -46,7 +46,7 @@ def store_title_ask_for_tag(bot, update):
                       ['sumproduct','sumsq','time','vlookup','ztest']]
      
     update.message.reply_text(
-        'Now, please choose a tag for your question: ',
+        'Now, please choose a tag for your post: ',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))   
     
     return 1 

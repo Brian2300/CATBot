@@ -132,15 +132,75 @@ def update_post_content(post_content,max_post_id):
              
     finally:
         connection.close()      
+
     
     
+"This methods retrieves the post by using post_id"   
+def pull_latest_post(post_id):  
+    connection = pymysql.connect(host = hostname,
+                            user= username,
+                            password=password,
+                            db=database)
     
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `post_id`, `parent_id`, `post_title`, `post_content` FROM `post` WHERE post_id = %s"
+            cursor.execute(sql, (post_id))
+            post = cursor.fetchone()
+        #print(question_posts)
+        #print(len(question_posts))
+        
+    finally:
+        connection.close()
+    return post    
+
+
     
+"This method retrieves the tag of a post"   
+def retrieve_tag(post_id): 
+    connection = pymysql.connect(host = hostname,
+                            user= username,
+                            password=password,
+                            db=database)
     
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `tag_id` FROM `post_tag` WHERE post_id = %s"
+            cursor.execute(sql, (post_id))
+            tag_id = cursor.fetchone()
+        
+        with connection.cursor() as cursor:
+            sql = "SELECT `tag` FROM `tag` WHERE tag_id = %s"
+            cursor.execute(sql, (tag_id))
+            tag = cursor.fetchone()        
+        
+    finally:
+        connection.close()
+    return  tag
+
+
+
+"This method retrieves the parent post title from the post table"
+def retrieve_parent_post_title(parent_id):
+    connection = pymysql.connect(host = hostname,
+                            user= username,
+                            password=password,
+                            db=database)
     
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `post_title` FROM `post` WHERE post_id = %s"
+            cursor.execute(sql, (parent_id))
+            post = cursor.fetchone()
+        #print(question_posts)
+        #print(len(question_posts))
+        
+    finally:
+        connection.close()
+    return post 
+
     
-    
-    
+     
     
     
     

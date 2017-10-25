@@ -7,8 +7,8 @@ Created on 10 Jun 2017
 import property
 import logging
 from telegram import *
-# import threading
-# import time
+import threading
+import time
 import datetime
 #InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters
@@ -17,11 +17,6 @@ import registration.register
 from attendance.updateAttendance import check_attendance_code
 from pip.cmdoptions import only_binary
 
-#import pullpost.pullPost
-# import urllib
-# import json 
-# import requests
-
 from datetime import datetime
 import post_class_summary
 from post_class_summary import post_class_s, post_class_summary_db
@@ -29,8 +24,11 @@ from post_class_summary import post_class_s, post_class_summary_db
 import consultation.book_consultation
 import consultation.check_consultation
 import forum_linkage.Post_Question
+import forum_linkage.forum_linkage_db
 
-
+import urllib
+import json 
+import requests
 
 
 #from Bot.askQuestion import ask_question
@@ -171,23 +169,6 @@ def button(bot, update):
            
         # streamline to respective functions
         print(query.message.message_id)
-
-
-
-# def update_conversationHandler(status_para):
-#     post_class_conv_handler = ConversationHandler(
-#         entry_points=[CommandHandler('Go', post_class_summary.post_class_s.post_class_summary)],
-#         
-#         states = status_para,
-#                                 
-#         fallbacks=[CommandHandler('cancel', cancel)],
-#         
-#         per_chat = True,
-#         
-#         per_user = True
-#                                                         
-#         )    
-#     dp.add_handler(post_class_conv_handler)
     
 
 
@@ -211,82 +192,62 @@ def help(bot, update):
 def error(bot, update, error):
     logging.warning('Update "%s" caused error "%s"' % (update, error))
 
-
-# TOKEN = "392616716:AAGBjxAMrBF6iNB8YwL3dDqP-LrB82HOjhc"
-# URL = "https://api.telegram.org/bot{}/".format(TOKEN)
-# 
-# def send_message(text, chat_id):
-#     text = urllib.parse.quote_plus(text)
-#     url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
-#     get_url(url)
-# def get_url(url):
-#     response = requests.get(url)
-#     content = response.content.decode("utf8")
-#     return content
+TOKEN = "429775448:AAEb0qgYBV9s797I9c9_2e5qFIasucpV7Ao"
+URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 
-# def non_daemon():
-# 
-#     timepassed = 0
-#     post_id = 6
-#     while True:
-#         #comment out the following two lines
+def send_message(text, chat_id):
+    text = urllib.parse.quote_plus(text)
+    url = URL + "sendMessage?text={}&chat_id={}&parse_mode=Markdown".format(text, chat_id)
+    get_url(url)
+
+
+def get_url(url):
+    response = requests.get(url)
+    content = response.content.decode("utf8")
+    return content
+ 
+ 
+def non_daemon():
+ 
+    timepassed = 0
+    post_id = 104
+    while True:
+        #comment out the following two lines
 #         print(str(datetime.now()))
 #         print("getting updates after "+ str(timepassed) + " time")
-#         #below code will try to pull the latest question post from the web forum
-#         new_post = pullpost.pullPost.pull_latest_post(post_id)  #new_topic is Tuple
-#         #print (new_post)
-#         
-#         if len(new_post) > 0:   #if there is a new post
-#             latest_topic_id_tuple = pullpost.pullPost.pull_latest_topic()
-#             topic_first_post_id = pullpost.pullPost.fisrt_post_id(latest_topic_id_tuple[0][0]) 
-# 
-#             #print (latest_topic_id_tuple) 
-#             if new_post[0][0] < latest_topic_id_tuple[0][0]: #if the topic id is smaller than the maximum of all the topic ids.it is a reply to a post
-#                 # retrieve the topic to send to.
-#                 topic_title_tuple = pullpost.pullPost.topic_title(new_post[0][0])
-#                 #print(topic_title_tuple)
-#                 
-#                 #send message with topic
-#                 send_message("Hey~ There is a reply to the question: \""+str(topic_title_tuple[0][0])+"\"", -243926465)
-#                 
-#                 new_post_text_str = new_post[0][2]
-#                 #remove html
-#                 text1 = new_post_text_str.split(">",1)[1]
-#                 text2 = text1.split("<",1)[0]         
-#                 # send text.
-#                 send_message("The reply post is as below: \n\n\""+str(text2)+"\"", -243926465)
-#             elif new_post[0][0] == latest_topic_id_tuple[0][0] and post_id == topic_first_post_id[0][0]:
-#                 
-#                 #send message with topic
-#                 send_message("Hey~ There is a new question posted in forum with topic: \""+str(new_post[0][1])+"\"", -243926465) 
-#                 
-#                 new_post_text_str = new_post[0][2]
-#                 #remove html
-#                 text1 = new_post_text_str.split(">",1)[1]
-#                 text2 = text1.split("<",1)[0]         
-#                 # send text.
-#                 send_message("The question content is as below: \n\n\""+str(text2)+"\"", -243926465)                               
-#                 
-#             elif new_post[0][0] == latest_topic_id_tuple[0][0] and post_id != topic_first_post_id[0][0]: #if the topic id is equal to the maximum topic id and post id != first post id
-#                 
-#                 #send message with topic
-#                 send_message("Hey~ There is a reply to the question: \""+str(new_post[0][1])+"\"", -243926465)
-#                 
-#                 new_post_text_str = new_post[0][2]
-#                 #remove html
-#                 text1 = new_post_text_str.split(">",1)[1]
-#                 text2 = text1.split("<",1)[0]         
-#                 # send text.
-#                 send_message("The reply post is as below: \n\n\""+str(text2)+"\"", -243926465)                  
-#         
-#             post_id +=1
-#         #print(post_id)
-#         time.sleep(0.5)
-#         timepassed += 1
-#     # write a piece of code that can pull the updates and call messaging 
-# t = threading.Thread(name='non-daemon', target=non_daemon)
-# t.start()
+       
+        #below code will try to pull the latest question post from the web forum
+        #pull a new post from forum:
+        new_post = forum_linkage.forum_linkage_db.pull_latest_post(post_id) #new_post is of data type tuple.
+        print (new_post)
+        if new_post is not None: #there is a new post.
+            post_id = new_post[0]
+            parent_id = new_post[1]
+            post_title = new_post[2]
+            post_content = new_post[3]
+            print (post_title + post_content)
+            if post_content != "empty":
+                if parent_id == 0: # It is a new post.
+                    #retrieve post tag:
+                    tag_tuple = forum_linkage.forum_linkage_db.retrieve_tag(post_id)    
+                    tag = tag_tuple[0]
+                    print (tag)                    
+                    message_str = 'Hey~ There is a *new question* posted in forum:\n\n*Post Title:*  `%s`\n*Post Tag:*  `%s`\n*Post Content:*  `%s`'%(post_title,tag, post_content)
+                    send_message(message_str, -291022809)
+                else:
+                    #retrieve parent post title
+                    parent_post_title_tuple = forum_linkage.forum_linkage_db.retrieve_parent_post_title(parent_id)
+                    parent_post_title = parent_post_title_tuple[0]
+                    message_str = 'Hey~ There is a *reply* to question:\n`\"%s\"` \n\n*Reply Content:*  `%s`'%(parent_post_title,post_content)                    
+                    send_message(message_str, -291022809)
+                post_id +=1
+        #print(post_id)
+        time.sleep(0.5)
+        timepassed += 1
+    # write a piece of code that can pull the updates and call messaging 
+t = threading.Thread(name='non-daemon', target=non_daemon)
+t.start()
 
 
 
@@ -294,7 +255,7 @@ def error(bot, update, error):
 
 
 # Create the Updater and pass it your bot's token.
-updater = Updater("429775448:AAEb0qgYBV9s797I9c9_2e5qFIasucpV7Ao")
+updater = Updater(TOKEN)
 
 dp = updater.dispatcher
 
