@@ -64,9 +64,10 @@ def smu_email_input(bot, update, args):
         #chat_id
         chat_id = update.message.chat.id
         tele_username = update.message.chat.username
-        
+        #check whether any number is in the email address.
+        has_number = any(char.isdigit() for char in text)
         #The string after "/email" command must contain 'smu.edu.sg'
-        if 'smu.edu.sg' in text:
+        if 'smu.edu.sg' in text and has_number:
             # The email address user entered cannot exist in database.
             db_tsmu_email_address_row = registration.verifyRegistration.check_smu_email_address_existance(text)  #db_tsmu_email_address_row is of data type Tuple.
             if db_tsmu_email_address_row[0] == 0:
@@ -92,6 +93,33 @@ def smu_email_input(bot, update, args):
                     update.message.reply_text('An email is sent to you! Please follow the instruction within the email to continue with the registration. \n\nIf you did not receive the email, retry:\n/email [Your smu email address]')                    
             else:
                 update.message.reply_text('An email has already sent to you! Please follow the instruction within the email to continue with the registration.')
+        elif 'smu.edu.sg' in text and not has_number:
+            # The email address user entered cannot exist in database.
+            db_tsmu_email_address_row = registration.verifyRegistration.check_smu_email_address_existance_prof(text)  #db_tsmu_email_address_row is of data type Tuple.
+            if db_tsmu_email_address_row[0] == 0:
+                #The chat_id cannot exits in database.
+                db_num_chat_id = registration.verifyRegistration.retrieve_num_chat_id_prof(chat_id)
+                if db_num_chat_id[0] == 0:
+                    #generate verification code for this update
+                    veri_code = generate_verification_code()
+                    #store into database chat_id, verification code and temp smu email address.
+                    registration.verifyRegistration.first_insert_prof(chat_id,veri_code,text)
+                    #send email
+                    send_email(text,veri_code)
+                    update.message.reply_text('An email is sent to you! Please follow the instruction within the email to continue with the registration. \n\nIf you did not receive the email, retry:\n/email [Your smu email address] \n\nAnd make sure you entered your email address correctly.')
+                else:
+                    #delete the entry
+                    registration.verifyRegistration.delete_duplicate_chat_id(chat_id)
+                    #generate verification code for this update
+                    veri_code = generate_verification_code()                   
+                    #store into database chat_id, verification code and temp smu email address.
+                    registration.verifyRegistration.first_insert_prof(chat_id,veri_code,text)
+                    #send email
+                    send_email(text,veri_code)
+                    update.message.reply_text('An email is sent to you! Please follow the instruction within the email to continue with the registration. \n\nIf you did not receive the email, retry:\n/email [Your smu email address]')                    
+            else:
+                update.message.reply_text('An email has already sent to you! Please follow the instruction within the email to continue with the registration.')            
+            
         else:
             update.message.reply_text('Wrong input!!  Please enter your SMU email address.')
     else:
@@ -147,15 +175,23 @@ def verify_veri_code(bot, update, args):
     chat_id = update.message.chat.id
     #retrieve user's chat_id and veri_code from database.
     db_veri_code = registration.verifyRegistration.retrieve_first_insert(chat_id) # db_veri_code is of data type Tuple.
+    db_veri_code_prof = registration.verifyRegistration.retrieve_first_insert_prof(chat_id)
     #If the code entered by user is the same with the code previously generated.
     if len(args) !=0:
-
-        if args[0] == db_veri_code[0]:
-            #store into database smu_email
-            registration.verifyRegistration.insert_smu_email(chat_id)
-            update.message.reply_text('Ok~ Please let me know your group id. Make sure you use the format below:\n\n/gid [Your Group id]\n\nFor example: \n/gid G10')
-        else:
-            update.message.reply_text('Oops! Something is wrong. Please make sure your input matches the code I sent you.')
+        if db_veri_code is not None: #it is a student.
+            if args[0] == db_veri_code[0]:
+                #store into database smu_email
+                registration.verifyRegistration.insert_smu_email(chat_id)
+                update.message.reply_text('Ok~ Please let me know your group id. Make sure you use the format below:\n\n/gid [Your Group id]\n\nFor example: \n/gid G10')
+            else:
+                update.message.reply_text('Oops! Something is wrong. Please make sure your input matches the code I sent you.')
+        elif db_veri_code_prof is not None:#it is a professor.
+            if args[0] == db_veri_code_prof[0]:
+                #store into database smu_email
+                registration.verifyRegistration.insert_smu_email_prof(chat_id)
+                update.message.reply_text('Woohoo! registration is successful!')
+            else:
+                update.message.reply_text('Oops! Something is wrong. Please make sure your input matches the code I sent you.')            
     else:
         update.message.reply_text('Wrong input!! Please use the correct format.')
         

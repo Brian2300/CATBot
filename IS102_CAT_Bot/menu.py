@@ -25,6 +25,7 @@ import consultation.book_consultation
 import consultation.check_consultation
 import forum_linkage.Post_Question
 import forum_linkage.forum_linkage_db
+import forum_linkage.reply_post
 
 import urllib
 import json 
@@ -236,11 +237,14 @@ def non_daemon():
                     message_str = 'Hey~ There is a *new question* posted in forum:\n\n*Post Title:*  `%s`\n*Post Tag:*  `%s`\n*Post Content:*  `%s`'%(post_title,tag, post_content)
                     send_message(message_str, -291022809)
                 else:
-                    #retrieve parent post title
-                    parent_post_title_tuple = forum_linkage.forum_linkage_db.retrieve_parent_post_title(parent_id)
-                    parent_post_title = parent_post_title_tuple[0]
-                    message_str = 'Hey~ There is a *reply* to question:\n`\"%s\"` \n\n*Reply Content:*  `%s`'%(parent_post_title,post_content)                    
-                    send_message(message_str, -291022809)
+                    reply_tele = forum_linkage.forum_linkage_db.retrieve_reply_addr(post_id)
+                    if reply_tele is None:
+                        #retrieve parent post title
+                        parent_post_title_tuple = forum_linkage.forum_linkage_db.retrieve_parent_post_title(parent_id)
+                        parent_post_title = parent_post_title_tuple[0]
+                        message_str = 'Hey~ There is a *reply* to question:\n`\"%s\"` \n\n*Reply Content:*  `%s`'%(parent_post_title,post_content)                    
+                        send_message(message_str, -291022809)                        
+                        
                 post_id +=1
         #print(post_id)
         time.sleep(0.5)
@@ -271,7 +275,8 @@ dp.add_handler(CommandHandler('start', filter, pass_args=True))
 dp.add_handler(CommandHandler('email', registration.register.smu_email_input, pass_args=True))
 dp.add_handler(CommandHandler('code', registration.register.verify_veri_code, pass_args=True))
 dp.add_handler(CommandHandler('gid', registration.register.group_id, pass_args=True))
-dp.add_handler(CommandHandler('pwd',registration.register.web_password, pass_args=True))  
+dp.add_handler(CommandHandler('pwd',registration.register.web_password, pass_args=True))
+dp.add_handler(MessageHandler(Filters.reply, forum_linkage.reply_post.handle_reply))
 
 dp.add_handler(CommandHandler('ta', start))
 #updater.dispatcher.add_handler(CommandHandler('AskQuestion', ask_question, pass_args = True))
