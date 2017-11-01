@@ -35,6 +35,29 @@ def retrieve_avatar_id(chat_id):
         connection.close()    
     return result    
 
+
+
+"This method retrieves the avatar_id using chat_id from `professor_tele` table."
+def retrieve_avatar_id_prof(chat_id):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database) 
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `smu_email` FROM `professor_tele` WHERE `chat_id` = %s"
+            cursor.execute(sql, (chat_id))
+            smu_email = cursor.fetchone()
+            
+        with connection.cursor() as cursor:
+            sql = "SELECT `avatar_id` FROM `professor` WHERE `smu_email` = %s"
+            cursor.execute(sql, (smu_email))
+            avatar_id = cursor.fetchone()          
+    
+    finally:
+        connection.close()    
+    return avatar_id 
+
  
 
 "This method inserts all except tag and post_content to post table"

@@ -5,6 +5,7 @@ Created on 29 Oct 2017
 '''
 
 from forum_linkage import forum_linkage_db
+import identify_user_role.role
 
 
 "This method handles the reply message from a user."
@@ -16,8 +17,13 @@ def handle_reply(bot, update):
     reply_text = update.message.text
     #chat_id
     chat_id = update.message.from_user.id
-    #retrieve avatar_id using chat_id from student table.
-    avatar_id_stu = forum_linkage_db.retrieve_avatar_id(chat_id) 
+    user_obj = identify_user_role.role.identify_user_role(chat_id)
+    
+    #if student retrieve avatar_id using chat_id from student table.
+    if user_obj[0] == 'student': 
+        avatar_id = forum_linkage_db.retrieve_avatar_id(chat_id)
+    if user_obj[0] == 'prof':
+        avatar_id = forum_linkage_db.retrieve_avatar_id_prof(chat_id) 
     #print ( avatar_id_stu) 
     
     if "Reply Content" in msg_text or "Post Content" in msg_text:        
@@ -34,7 +40,7 @@ def handle_reply(bot, update):
             level = parent_reply[1] +1
             post_title = parent_reply[2]    
             #insert reply message into database.
-            forum_linkage_db.insert_reply(avatar_id_stu,parent_id,level,post_title,reply_text)  
+            forum_linkage_db.insert_reply(avatar_id,parent_id,level,post_title,reply_text)  
             #insert reply post_id into 'reply_send_from_telegroup' table
             post_id_cur_reply = forum_linkage_db.retrieve_id_by_content(reply_text)
             forum_linkage_db.insert_id_sent_fromTele(post_id_cur_reply)
@@ -43,7 +49,7 @@ def handle_reply(bot, update):
         elif "Post Content" in msg_text:
             #retrieve parent "post" information by using post content.
             msg_content = msg_text.split("Post Content:",1)[1]
-            print (msg_content)
+            #print (msg_content)
             msg_content_pure = msg_content.strip()
             #print (msg_content_pure)
             parent_post = forum_linkage_db.r_parent_post_id_level_pt(msg_content_pure)
@@ -51,7 +57,7 @@ def handle_reply(bot, update):
             level = parent_post[1] +1
             post_title = parent_post[2]
             #insert reply message into database
-            forum_linkage_db.insert_reply(avatar_id_stu,parent_id,level,post_title,reply_text)
+            forum_linkage_db.insert_reply(avatar_id,parent_id,level,post_title,reply_text)
             #insert reply post_id into 'reply_send_from_telegroup' table
             post_id_cur_reply = forum_linkage_db.retrieve_id_by_content(reply_text)
             forum_linkage_db.insert_id_sent_fromTele(post_id_cur_reply)
@@ -66,7 +72,7 @@ def handle_reply(bot, update):
             level = parent_post[1] +1
             post_title = parent_post[2] 
             #insert reply message into database
-            forum_linkage_db.insert_reply(avatar_id_stu,parent_id,level,post_title,reply_text)
+            forum_linkage_db.insert_reply(avatar_id,parent_id,level,post_title,reply_text)
             #insert reply post_id into 'reply_send_from_telegroup' table
             post_id_cur_reply = forum_linkage_db.retrieve_id_by_content(reply_text)   
             forum_linkage_db.insert_id_sent_fromTele(post_id_cur_reply)

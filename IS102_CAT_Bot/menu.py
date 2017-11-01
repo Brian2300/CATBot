@@ -26,6 +26,7 @@ import consultation.check_consultation
 import forum_linkage.Post_Question
 import forum_linkage.forum_linkage_db
 import forum_linkage.reply_post
+import identify_user_role.role
 
 import urllib
 import json 
@@ -68,15 +69,30 @@ def start(bot, update):
 
 
 def home(bot, update):
-    keyboard = [[InlineKeyboardButton("Post Class Summary", callback_data='Post Class Summary'),
-                 InlineKeyboardButton("Consultation", callback_data='consultation')],
-                [InlineKeyboardButton("My Profile", callback_data='My Profile'),
-                 InlineKeyboardButton("Post to Forum", callback_data='Post to Forum')]]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+    #chat_id
+    chat_id = update.message.chat.id
+    #to verify whether it is a student or professor
+    user_obj = identify_user_role.role.identify_user_role(chat_id)
+    #print (user_obj)
+    #if student:
+    print (user_obj[0])
+    if user_obj[0] == 'student':        
+        keyboard = [[InlineKeyboardButton("Post Class Summary", callback_data='Post Class Summary'),
+                     InlineKeyboardButton("Consultation", callback_data='consultation')],
+                    [InlineKeyboardButton("My Profile", callback_data='My Profile'),
+                     InlineKeyboardButton("Post to Forum", callback_data='Post to Forum')]]
     
+        reply_markup = InlineKeyboardMarkup(keyboard)
+    
+        update.message.reply_text('Please choose:', reply_markup=reply_markup)
+        
+    if user_obj[0] == 'prof':
+        keyboard = [[InlineKeyboardButton("Post to Forum", callback_data='Post to Forum')]]     
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+    
+        update.message.reply_text('Please choose:', reply_markup=reply_markup)  
+       
     
     
 def consultation_button(bot, update):
@@ -227,13 +243,13 @@ def non_daemon():
             parent_id = new_post[1]
             post_title = new_post[2]
             post_content = new_post[3]
-            print (post_title + post_content)
+            #print (post_title + post_content)
             if post_content != "empty":
                 if parent_id == 0: # It is a new post.
                     #retrieve post tag:
                     tag_tuple = forum_linkage.forum_linkage_db.retrieve_tag(post_id)    
                     tag = tag_tuple[0]
-                    print (tag)                    
+                    #print (tag)                    
                     message_str = 'Hey~ There is a *new question* posted in forum:\n\n*Post Title:*  `%s`\n*Post Tag:*  `%s`\n*Post Content:*  `%s`'%(post_title,tag, post_content)
                     send_message(message_str, -291022809)
                 else:

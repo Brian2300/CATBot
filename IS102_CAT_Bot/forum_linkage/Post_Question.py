@@ -9,6 +9,8 @@ from forum_linkage import forum_linkage_db
 from telegram import *
 from telegram.ext import MessageHandler, Filters, ConversationHandler
 
+import identify_user_role.role
+
 
 
 "send out start message to trigger the start of conversation/send first queston."
@@ -33,12 +35,18 @@ def ask_for_title(bot, update):
 def store_title_ask_for_tag(bot, update):
     #chat_id
     chat_id = update.message.chat.id
-    #retrieve avatar_id using chat_id from student table.
-    avatar_id_stu = forum_linkage_db.retrieve_avatar_id(chat_id)
+    user_obj = identify_user_role.role.identify_user_role(chat_id)
+    
+    #if student retrieve avatar_id using chat_id from student table.
+    if user_obj[0] == 'student': 
+        avatar_id = forum_linkage_db.retrieve_avatar_id(chat_id)
+    if user_obj[0] == 'prof':
+        avatar_id = forum_linkage_db.retrieve_avatar_id_prof(chat_id)
+        
     #get title from user input.
     title = update.message.text
     #insert into database.
-    forum_linkage_db.insert_with_title(avatar_id_stu, title) 
+    forum_linkage_db.insert_with_title(avatar_id, title) 
     #ask for tag:
     reply_keyboard = [['countif', 'index', 'lookup','match','norm.dist'],
                       ['norminv', 'offset','pivot table','round', 'slope'],
@@ -57,10 +65,16 @@ def store_title_ask_for_tag(bot, update):
 def ask_for_content(bot, update):   
     #chat_id
     chat_id = update.message.chat.id
-    #retrieve avatar_id using chat_id from student table.
-    avatar_id_stu = forum_linkage_db.retrieve_avatar_id(chat_id)    
+    user_obj = identify_user_role.role.identify_user_role(chat_id)
+    
+    #if student retrieve avatar_id using chat_id from student table.
+    if user_obj[0] == 'student': 
+        avatar_id = forum_linkage_db.retrieve_avatar_id(chat_id)
+    if user_obj[0] == 'prof':
+        avatar_id = forum_linkage_db.retrieve_avatar_id_prof(chat_id)
+            
     # retrieve the maximum post id from a particular user(using avatar_id)
-    max_post_id = forum_linkage_db.retrieve_max_post_id(avatar_id_stu)
+    max_post_id = forum_linkage_db.retrieve_max_post_id(avatar_id)
     #retrieve tag_id from tag table
     tag = update.message.text
     #print(tag)
@@ -78,10 +92,16 @@ def update_post_content(bot, update):
     #update post content.
         #chat_id
     chat_id = update.message.chat.id
-        #retrieve avatar_id using chat_id from student table.
-    avatar_id_stu = forum_linkage_db.retrieve_avatar_id(chat_id)    
+    user_obj = identify_user_role.role.identify_user_role(chat_id)
+    
+        #if student retrieve avatar_id using chat_id from student table.
+    if user_obj[0] == 'student': 
+        avatar_id = forum_linkage_db.retrieve_avatar_id(chat_id)
+    if user_obj[0] == 'prof':
+        avatar_id = forum_linkage_db.retrieve_avatar_id_prof(chat_id)
+            
         # retrieve the maximum post id from a particular user(using avatar_id)
-    max_post_id = forum_linkage_db.retrieve_max_post_id(avatar_id_stu) 
+    max_post_id = forum_linkage_db.retrieve_max_post_id(avatar_id) 
     post_content = update.message.text   
     forum_linkage_db.update_post_content(post_content,max_post_id)
     
