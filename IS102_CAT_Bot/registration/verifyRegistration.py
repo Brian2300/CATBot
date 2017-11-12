@@ -6,12 +6,12 @@ Created on 12 Jul 2017
 
 import pymysql.cursors
 import random,string
+import property
 
-
-hostname = 'localhost'
-username = 'root'
-password = ''
-database = 'is102_cat'
+hostname = property.hostname
+username = property.username
+password = property.password
+database = property.database
 
 # hostname = '10.0.106.110'
 # username = 'ise'
@@ -184,6 +184,25 @@ def check_registration_chat_id(chat_id):
     finally:
         connection.close()    
         return result
+
+
+
+"""This method retrieves the chat_id of professor"""
+def check_registration_chat_id_prof(chat_id):
+    connection = pymysql.connect(host = hostname,
+                            user= username,
+                            password=password,
+                            db=database)
+            
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT COUNT(*) FROM `professor_tele` WHERE `chat_id` = %s"
+            cursor.execute(sql, (chat_id))
+            result = cursor.fetchone()
+            
+    finally:
+        connection.close()    
+        return result
     
 
 
@@ -204,6 +223,26 @@ def check_registration_smu_email_id(chat_id):
     finally:
         connection.close()    
         return result   
+
+
+
+"""This method retrieves the smu_email_id (WHERE)"""    
+def check_registration_smu_email_id_prof(chat_id):
+    connection = pymysql.connect(host = hostname,
+                            user= username,
+                            password=password,
+                            db=database)    
+    
+    try:
+        # retrieve smu_email_id
+        with connection.cursor() as cursor:
+            sql = "SELECT `smu_email` FROM `professor_tele` WHERE `chat_id` = %s"
+            cursor.execute(sql, (chat_id))
+            result = cursor.fetchone()
+            
+    finally:
+        connection.close()    
+        return result
     
     
     

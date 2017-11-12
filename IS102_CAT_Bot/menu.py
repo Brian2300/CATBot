@@ -27,6 +27,7 @@ import forum_linkage.Post_Question
 import forum_linkage.forum_linkage_db
 import forum_linkage.reply_post
 import identify_user_role.role
+import property
 
 import urllib
 import json 
@@ -209,7 +210,7 @@ def help(bot, update):
 def error(bot, update, error):
     logging.warning('Update "%s" caused error "%s"' % (update, error))
 
-TOKEN = "429775448:AAEb0qgYBV9s797I9c9_2e5qFIasucpV7Ao"
+TOKEN = "307726211:AAEpMwjDse7B7Fw0zpn3GVfAtbGIpkW4gik"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 
@@ -228,7 +229,7 @@ def get_url(url):
 def non_daemon():
  
     timepassed = 0
-    post_id = 104
+    post_id = 55
     while True:
         #comment out the following two lines
 #         print(str(datetime.now()))
@@ -244,14 +245,14 @@ def non_daemon():
             post_title = new_post[2]
             post_content = new_post[3]
             #print (post_title + post_content)
-            if post_content != "empty":
+            if post_content != "kweh#k1":
                 if parent_id == 0: # It is a new post.
                     #retrieve post tag:
                     tag_tuple = forum_linkage.forum_linkage_db.retrieve_tag(post_id)    
                     tag = tag_tuple[0]
                     #print (tag)                    
                     message_str = 'Hey~ There is a *new question* posted in forum:\n\n*Post Title:*  `%s`\n*Post Tag:*  `%s`\n*Post Content:*  `%s`'%(post_title,tag, post_content)
-                    send_message(message_str, -291022809)
+                    send_message(message_str, property.group_chat_id) # chat_id need to be changed.
                 else:
                     reply_tele = forum_linkage.forum_linkage_db.retrieve_reply_addr(post_id)
                     if reply_tele is None:
@@ -259,7 +260,7 @@ def non_daemon():
                         parent_post_title_tuple = forum_linkage.forum_linkage_db.retrieve_parent_post_title(parent_id)
                         parent_post_title = parent_post_title_tuple[0]
                         message_str = 'Hey~ There is a *reply* to question:\n`\"%s\"` \n\n*Reply Content:*  `%s`'%(parent_post_title,post_content)                    
-                        send_message(message_str, -291022809)                        
+                        send_message(message_str, property.group_chat_id)# chat_id need to be changed                 
                         
                 post_id +=1
         #print(post_id)

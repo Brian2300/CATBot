@@ -33,19 +33,34 @@ def display_timeslot(bot, update):
     
     #prepare time slot button list(from tuple to list).
     #print (len(ava_timeslots))
+    ava_rej_slots_to_display = []
     ava_timeslot_list = list(ava_timeslots)
     for i in range(len(ava_timeslot_list)):
         ava_timeslot_list[i] = list(ava_timeslot_list[i])
-                
-    #print(ava_timeslot_list)
+        #check status for each of the timeslots.
+        slot_status_tuple = consultation_db.retrieve_slot_status(prof_email,ava_timeslot_list[i])
+        print (slot_status_tuple)
+        display = True
+        if slot_status_tuple is not None:
+            for j in range(len(slot_status_tuple)):
+                if slot_status_tuple[j][0] == "pending" or slot_status_tuple[j][0] == "approve":
+                    display = False
+        else:
+            display = True
+            
+        if display:
+            ava_rej_slots_to_display.append(list(ava_timeslot_list[i]))
+                                            
+        
+    #print(ava_timeslot_list) 
     
     #button list:
     keyboard = []
     
     #format the timeslots.
-    for i in range(len(ava_timeslot_list)):
+    for i in range(len(ava_rej_slots_to_display)):
         #for every timeslot (with start_time and end_time)
-        new_list = ava_timeslot_list[i]
+        new_list = ava_rej_slots_to_display[i]
         one_slot_button = ''
         
         for j in range(len(new_list)):
@@ -88,7 +103,7 @@ def finish_booking(bot, update):
     query = update.callback_query
     chat_id = query.message.chat_id    
     #retrieve group_id and smu_email from 'student' table.
-    gid_email = consultation_db.retrieve_gid_smu_email(chat_id) #
+    gid_email = consultation_db.retrieve_gid_smu_email(chat_id) # 
     #print (gid_email)
     #retrieve avatar_id using group_id from "professor_section" table
     avatar_id = consultation_db.retrieve_avatar_id(gid_email[0]) #

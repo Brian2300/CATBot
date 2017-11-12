@@ -5,10 +5,12 @@ Created on Jun 16, 2017
 '''
 #!/usr/bin/python
 
-hostname = 'localhost'
-username = 'root'
-password = ''
-database = 'is102_cat'
+import property
+
+hostname = property.hostname
+username = property.username
+password = property.password
+database = property.database
  
 # hostname = '10.0.106.110'
 # username = 'ise'

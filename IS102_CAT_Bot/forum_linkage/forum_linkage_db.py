@@ -6,12 +6,13 @@ Created on 23 Oct 2017
 
 import pymysql.cursors
 import random,string
+import property
 
 
-hostname = 'localhost'
-username = 'root'
-password = ''
-database = 'is102_cat'
+hostname = property.hostname
+username = property.username
+password = property.password
+database = property.database
 
 # hostname = '10.0.106.110'
 # username = 'ise'
@@ -70,7 +71,7 @@ def insert_with_title(avatar_id_stu, title):
     try:
         with connection.cursor() as cursor:
             # Create a new record
-            sql = "INSERT INTO `post` (`avatar_id`, `parent_id`, `level`, `post_title`, `post_content`, `is_question`, `is_bot`, `is_qa_bountiful`, `timestamp`, `time_limit_qa`, `time_limit_bot`, `qa_coin_basic`, `qa_coin_bounty`, `thoughfulness_score`, `no_show`, `previous_version`, `number_of_upvotes`, `number_of_downvotes`) VALUES (%s, 0 , 0 , %s, 'empty', 1 , 0, 0, NOW(), 0, 0, 0, 0, 0, 0, 0, 0, 0);"
+            sql = "INSERT INTO `post` (`avatar_id`, `parent_id`, `level`, `post_title`, `post_content`, `is_question`, `is_bot`, `is_qa_bountiful`, `timestamp`, `time_limit_qa`, `time_limit_bot`, `qa_coin_basic`, `qa_coin_bounty`, `thoughfulness_score`, `no_show`, `previous_version`, `number_of_upvotes`, `number_of_downvotes`) VALUES (%s, 0 , 0 , %s, 'kweh#k1', 1 , 0, 0, NOW(), 0, 0, 0, 0, 0, 0, 0, 0, 0);"
             cursor.execute(sql, (avatar_id_stu,title))
     
         # connection is not autocommit by default. So you must commit to save the changes.
@@ -135,6 +136,27 @@ def insert_to_post_tag(max_post_id,tag_id):
     
     finally:
         connection.close()    
+
+
+
+"This method inserts into post_tag table with tag others"   
+def insert_to_post_tag_other(max_post_id):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database)
+        
+    try:
+        with connection.cursor() as cursor:
+            # Create a new record
+            sql = "INSERT INTO `post_tag` (`post_id`, `tag_id`, `association`) VALUES (%s, 21, 0)"        
+            cursor.execute(sql, (max_post_id))
+    
+        # connection is not autocommit by default. So you must commit to save the changes.
+        connection.commit()
+    
+    finally:
+        connection.close() 
 
 
 

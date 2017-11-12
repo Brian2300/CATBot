@@ -32,8 +32,14 @@ def register(bot, update):
     row_num = registration.verifyRegistration.check_registration_chat_id(chat_id) #row_num is of data type Tuple
     smu_email_id_dbValue = registration.verifyRegistration.check_registration_smu_email_id(chat_id) #smu_email_id_dbValue is of data type Tuple
     
+    row_num_p = registration.verifyRegistration.check_registration_chat_id_prof(chat_id)
+    smu_email_p_dbValue = registration.verifyRegistration.check_registration_smu_email_id_prof(chat_id)
+  
+    
     if row_num[0] != 0 and len(smu_email_id_dbValue[0]) > 5 :#if it is a registered user.
         update.message.reply_text('Welcome back! I recognized that you are a registered user:) \nUse /help to see what I can do for you.')
+    elif row_num_p[0] != 0  and len(smu_email_p_dbValue[0]) > 0:
+        update.message.reply_text('Welcome back! I recognized that you are a registered professor:) \nUse /help to see what I can do for you.')
     else:
         #create button object
         keyboard = [[InlineKeyboardButton("register", callback_data='register')]]

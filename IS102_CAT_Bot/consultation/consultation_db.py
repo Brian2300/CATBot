@@ -6,12 +6,13 @@ Created on 20 Sep 2017
 
 import pymysql.cursors
 import random,string
+import property
 
 
-hostname = 'localhost'
-username = 'root'
-password = ''
-database = 'is102_cat'
+hostname = property.hostname
+username = property.username
+password = property.password
+database = property.database
 
 # hostname = '10.0.106.110'
 # username = 'ise'
@@ -250,3 +251,30 @@ def rejected_slots(student_email):
     finally:
         connection.close()    
     return result
+
+
+
+"this method retrieves the all slot status"
+def retrieve_slot_status(prof_email,ava_timeslot_list):
+    connection = pymysql.connect(host = hostname,
+                                user= username,
+                                password=password,
+                                db=database) 
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT `status` FROM `student_consultationtimeslot` WHERE `smu_email` = %s and `start_DateTime` = %s and `end_DateTime` = %s"
+            cursor.execute(sql, (prof_email,ava_timeslot_list[0],ava_timeslot_list[1]))
+            result = cursor.fetchall()
+    
+    finally:
+        connection.close()    
+    return result
+
+
+
+
+
+
+
+

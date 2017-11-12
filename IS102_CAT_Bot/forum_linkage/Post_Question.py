@@ -48,10 +48,10 @@ def store_title_ask_for_tag(bot, update):
     #insert into database.
     forum_linkage_db.insert_with_title(avatar_id, title) 
     #ask for tag:
-    reply_keyboard = [['countif', 'index', 'lookup','match','norm.dist'],
-                      ['norminv', 'offset','pivot table','round', 'slope'],
-                      ['small','solver','sqrt','stdev','substitute'],
-                      ['sumproduct','sumsq','time','vlookup','ztest']]
+    reply_keyboard = [['countif', 'index', 'lookup','match','vlookup','norminv'],
+                      ['offset','pivot table','round', 'slope', 'small','solver'],
+                      ['sqrt','stdev','substitute','ztest','sumsq','time'],
+                      ['norm.dist','sumproduct','others']]
      
     update.message.reply_text(
         'Now, please choose a tag for your post: ',
@@ -79,8 +79,12 @@ def ask_for_content(bot, update):
     tag = update.message.text
     #print(tag)
     tag_id = forum_linkage_db.retrieve_tag_id(tag) 
+    #print (tag_id)
+    if tag_id is None:
+        forum_linkage_db.insert_to_post_tag_other(max_post_id)
+    else:
     #insert max_post_id, tag_id to post_tag table.
-    forum_linkage_db.insert_to_post_tag(max_post_id,tag_id)
+        forum_linkage_db.insert_to_post_tag(max_post_id,tag_id)
     
     update.message.reply_text("Okay, please send me your post content!")
     return 2

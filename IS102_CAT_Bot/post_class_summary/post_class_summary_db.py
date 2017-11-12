@@ -6,12 +6,12 @@ Created on 24 Aug 2017
 
 import pymysql.cursors
 import random,string
+import property
 
-
-hostname = 'localhost'
-username = 'root'
-password = ''
-database = 'is102_cat'
+hostname = property.hostname
+username = property.username
+password = property.password
+database = property.database
 
 # hostname = '10.0.106.110'
 # username = 'ise'
