@@ -28,6 +28,7 @@ import forum_linkage.forum_linkage_db
 import forum_linkage.reply_post
 import identify_user_role.role
 import property
+import MyProfile.my_profile
 
 import urllib
 import json 
@@ -134,6 +135,8 @@ def button(bot, update):
     # if the register button is pressed by user
     if query.data == 'register' :
         registration.register.press_register(bot, update)
+    elif query.data == 'My Profile':
+        MyProfile.my_profile.display_profile(bot, update)
     elif query.data == 'Post to Forum':
         #send out start message.
         forum_linkage.Post_Question.startMsg(bot, update)
@@ -210,7 +213,7 @@ def help(bot, update):
 def error(bot, update, error):
     logging.warning('Update "%s" caused error "%s"' % (update, error))
 
-TOKEN = "307726211:AAEpMwjDse7B7Fw0zpn3GVfAtbGIpkW4gik"
+TOKEN = property.token 
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 
@@ -229,7 +232,7 @@ def get_url(url):
 def non_daemon():
  
     timepassed = 0
-    post_id = 55
+    post_id = 85
     while True:
         #comment out the following two lines
 #         print(str(datetime.now()))

@@ -21,3 +21,7 @@ database = 'ise'
 
 """group chat_id"""
 group_chat_id = -1001144113760
+# prof dai students: -1001144113760
+# ise testing group: -1001217517721
+
+token = "307726211:AAEpMwjDse7B7Fw0zpn3GVfAtbGIpkW4gik"
